@@ -20,28 +20,40 @@ type MatricesDistancias struct {
 
 // Recibe la lista(arrray/slice) de los ID de las ciudades, vemos si existe la
 // arista y sacamos la distancia que se agrega a l
+
 func LlenaListaL (ciudadesID []int, distancias [][]float64) []float64{
+// func LlenaListaL (distancias [][]float64) []float64{
 	var e []float64
 	for i := 0; i < len(ciudadesID); i++ {
-		// for j := i+1; j < len(ciudadesID); j++ {
+	// for i := 0; i < len(distancias); i++ {
+		for j := i+1; j < len(ciudadesID); j++ {
 		
-		for j := 0; j < len(ciudadesID); j++ {
+		// for j := 0; j < len(distancias[i]); j++ {
 			// f := ciudadesID[i]
 			// s := ciudadesID[j]
 			// fmt.Printf("%df, %ds\n", f,s)
-			// if (contenidasEnE(f,s, distancias)) {
 			
-			
-			// if (contenidasEnE(i, j, distancias)) {
+			if (contenidasEnE(i, j, distancias)) {
 				// e = append(e, getDistancia(f,s, distancias))
 				// fmt.Printf("([%d]/%d)-([%d]/%d)\n", ciudadesID[i],ciudadesID[i], ciudadesID[j],ciudadesID[j])
-				// e = append(e, getDistancia(i,j, distancias))
-			// }
+				e = append(e, getDistancia(i,j, distancias))
+			}
 
-			fmt.Printf("(%d,%d), %E\n", i+1,j+1, distancias[i][j])
+			// fmt.Printf("(%d,%d), %E\n", i+1,j+1, distancias[i][j])
+
 		}
 	}
-	sort.Float64s(e)
+	fmt.Println(e)
+	sort.Float64s(e) //COMO SORTEA (?)
+	fmt.Println(e)
+	suma := 0.0
+	fmt.Println(len(e))
+	// for i := 0; i < len(e)-1; i++ {
+	for i := len(e)-1; i >= 0; i-- {
+	// for i := len(e)-1; i > 1; i++ {	
+		suma += e[i]
+	}
+	fmt.Printf("\n\n%2.15f\n\n", suma/2)
 	return e
 }
 
@@ -60,8 +72,11 @@ func Normalizador(listaE []float64) float64 {
 func FuncionCostoSuma(ciudadesID []int, distancias [][]float64) float64{
 	suma := 0.0
 	for i := 1; i < len(ciudadesID); i++ {
-		suma += getDistancia(ciudadesID[i-1], ciudadesID[i], distancias)
+		// suma += getDistancia(ciudadesID[i-1], ciudadesID[i], distancias)
+		suma += getDistancia(i-1, i, distancias)
 	}
+
+	fmt.Printf("suma: %2.15f", suma*2)
 	return suma	
 }
 
@@ -69,7 +84,12 @@ func FuncionCostoSuma(ciudadesID []int, distancias [][]float64) float64{
 // Recibe la lista(array/slice) cd ID's de ciudades
 // func FuncionCosto(ciudadesID []int) float64{
 func FuncionCosto(ciudadesID []int, distancias [][]float64) float64{
+	
 	listaMax := LlenaListaL(ciudadesID, distancias)
+
+	// listaMax := LlenaListaL(distancias)
+
+	
 	ns := Normalizador(listaMax)
 	suma := FuncionCostoSuma(ciudadesID, distancias)
 	return suma/ns
@@ -78,8 +98,8 @@ func FuncionCosto(ciudadesID []int, distancias [][]float64) float64{
 // Nos dice si dos aristas están en la gráfica normal
 // func contenidasEnE(i, j int) bool {
 func contenidasEnE(i, j int, distancias [][]float64) bool {
-	// return distancias[i][j] != 0 || distancias[j][i] != 0
-	return distancias[i][j] != 0
+	return distancias[i][j] != 0.0 || distancias[j][i] != 0.0
+	// return distancias[i][j] != 0.0
 	// return true;
 }
 
@@ -124,7 +144,7 @@ func main() {
 	var distancias MatricesDistancias
 	distancias.values = obtenerDistancias(ciudades)
 	norm := FuncionCosto(ciudades, distancias.values)
-	fmt.Println(norm)
+	fmt.Printf("%E NORM", norm)
 	
 	// fmt.Printf("%d longitud total\n",len(distancias.values))
 	// for i := 0; i < len(distancias.values[0]); i++ {
