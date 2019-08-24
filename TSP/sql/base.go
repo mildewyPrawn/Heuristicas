@@ -61,7 +61,6 @@ func normalizador(aristas []float64, k int) float64 {
 }
 
 // Regresa la distancia natural entre dos (u,v) ciudades dadas por su ID.
-// func distanciaNatural(u, v int, max float64) float64 {
 func distanciaNatural(u, v int, ciudadesID []int) float64 {
 	a := obtenerA(u, v, ciudadesID)
 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
@@ -98,30 +97,30 @@ func obtenerLatLon(i int, ciudadesID []int) (latitud, longitud float64) {
 	return radianes(lat), radianes(lon)
 }
 
+// Calcula la funcion de costo, recibe los ID's de las ciudades, las distancias y
+// la máxima distancia.
 func costo(ciudadesID []int, distancias [][]float64, max float64) float64 {
 	suma := 0.0
 	for i := 1; i < len(ciudadesID); i++ {
-		// fmt.Printf("%d\n",i)
 		if (distancias[i][i-1]) == 0 && distancias[i-1][i] == 0 {
-			// fmt.Printf("%d-%d\n", ciudadesID[i], ciudadesID[i-1])
 			suma += pesoAumentado(ciudadesID[i], ciudadesID[i-1], max, ciudadesID)
 
 		} else {
 			suma += distancias[i][i-1] + distancias[i-1][i]
-			// suma += distancias[i][i-1] + distancias[i-1][i]
 		}
-		// fmt.Printf("%d-%d\t", ciudadesID[i], ciudadesID[i-1])
-		// fmt.Printf("%2.15f\t%d\n", suma, i)
 	}
 	return suma
 }
 
+// Calcula el peso aumentado, o sea, la distancia natural por la máxima
+// distancia.
 func pesoAumentado(i, j int, max float64, ciudadesID []int) float64 {
 	dist := distanciaNatural(i, j, ciudadesID)
-	// fmt.Println(max)
 	return dist * max
 }
 
+// Main, debo de pasar todo a distintos archivos y mandar a llamar y hacer variables
+// globales.
 func main() {
 	var ciudadesID = []int{1,2,3,4,5,6,7,75,163,164,165,168,172,327,329,331,332,333,489,490,491,492,493,496,652,653,654,656,657,792,815,816,817,820,978,979,980,981,982,984}
 	// var ciudadesID = []int{1,2,3,4,5,6,7,8,9,11,12,14,16,17,19,20,22,23,25,26,27,74,75,77,163,164,165,166,167,168,169,171,172,173,174,176,179,181,182,183,184,185,186,187,297,326,327,328,329,330,331,332,333,334,336,339,340,343,344,345,346,347,349,350,351,352,353,444,483,489,490,491,492,493,494,495,496,499,500,501,502,504,505,507,508,509,510,511,512,520,652,653,654,655,656,657,658,660,661,662,663,665,666,667,668,670,671,673,674,675,676,678,792,815,816,817,818,819,820,821,822,823,825,826,828,829,832,837,839,840,978,979,980,981,982,984,985,986,988,990,991,995,999,1001,1003,1004,1037,1038,1073,1075}
@@ -129,10 +128,8 @@ func main() {
 	var distancias MatricesDistancias
 	var normaliz, maximaDist float64
 	distancias.values = ciudades(ciudadesID)
-	// distancias.values = ciudades()
 	
 	aristasE := totalAristas(distancias.values, ciudadesID)
-	// fmt.Println(distancias.values)
 
 	fmt.Printf("TOTAL ARISTAS:\t %d\n", len(aristasE))
 	maximaDist = aristasE[len(aristasE)-1]
@@ -143,7 +140,6 @@ func main() {
 	}
 	normaliz = normalizador(aristasE, len(ciudadesID))
 	fmt.Printf("NORMALIZADOR:\t %2.15f\n", normaliz)
-	// fmt.Println(aristasE)
 
 	fmt.Printf("DISTANCIA NATURAL(%d-%d):\t%2.15f\n",1 ,7, distanciaNatural(1,7, ciudadesID))
 
@@ -151,8 +147,6 @@ func main() {
 	
 	fmt.Printf("FUNCION COSTO: \t%2.15f\n", funCosto)
 
-
-	// yo := 1225199461056879.000000000000000
 	yo := costo(ciudadesID, distancias.values, maximaDist)/normaliz
 	canek := 4526237.801017570309341
 
