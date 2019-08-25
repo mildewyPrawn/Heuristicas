@@ -2,65 +2,129 @@ package funciones
 
 import (
 	"sort"
+	"math"
+
+	"database/sql"
+	// "fmt"
+	_ "github.com/mattn/go-sqlite3"
 )
 
-// Lista ordenada de mayor a menor (?) que contiene todas las distancias que
-// existen en cada par ordenado de E
+const radio = 6373000
+var ID []int
+var Distancias [][]float64
+var AristasE []float64
+var MaximaDist float64
 
-// Recibe la lista(arrray/slice) de los ID de las ciudades, vemos si existe la
-// arista y sacamos la distancia que se agrega a l
-func LlenaListaL (ciudadesID []int) []float64{
-	var e []float64
-	for i := 0; i < len(ciudadesID); i++ {
-		for j := i+1; j < len(ciudadesID); j++ {
-			f := ciudadesID[i]
-			s := ciudadesID[j]
-			if (contenidasEnE(f,s)) {
-				e = append(e, getDistancia(f,s))
+
+// Calcula la funcion de costo, recibe los ID's de las ciudades, las distancias y
+// la máxima distancia.
+// func FunCosto(ciudadesID []int, distancias [][]float64, max float64) float64 {
+// func FunCosto(ciudadesID []int, distancias [][]float64) float64 {
+func FunCosto(ciudadesID []int) float64 {
+	suma := 0.0
+	for i := 1; i < len(ciudadesID); i++ {
+		if (Distancias[i][i-1]) == 0 && Distancias[i-1][i] == 0 {
+			suma += pesoAumentado(ciudadesID[i], ciudadesID[i-1])
+		} else {
+			suma += Distancias[i][i-1] + Distancias[i-1][i]
+		}
+	}
+	return suma/Normalizador()
+}
+
+// Regresa la suma de las últimas k aristas
+// func Normalizador(aristas []float64, k int) float64 {
+func Normalizador() float64 {
+	suma := 0.0
+	end := len(AristasE)-len(ID)
+	for i := len(AristasE)-1; i > end; i-- {
+		suma += AristasE[i]
+	}
+	return suma
+}
+
+// Dados los ID's, regresa la matriz de la gráfica completa de los ID's
+func completa(ciudades []int) [][]float64{ //hay quepasar las ciudades, pero las tengo abajo
+	var matriz = [][]float64{}
+	database, _ := sql.Open("sqlite3", "../base/tsp.db")
+	for i := 0; i < len(ciudades); i++ {
+		adyacentes := make([]float64, len(ciudades))
+		for j := 0; j < len(ciudades); j++ {
+			var distance float64
+			rows, _ := database.Query("SELECT distance FROM connections WHERE id_city_1 = ? AND id_city_2 = ?", ciudades[i], ciudades[j])
+			for rows.Next() {
+				rows.Scan(&distance)
+				adyacentes[j] = distance
+			}
+		}
+		matriz = append(matriz, adyacentes)
+	}
+	return matriz
+}
+
+// Para cada par no ordenado si la arista está en distancias(en tsp.sql) la
+// agregamos a una lista, la cual está ordenada de menor a mayor.
+// func totalAristas(distancias [][]float64, ciudades []int) []float64{
+func totalAristas(distancias [][]float64, ciudades []int) []float64{
+	var totalAristasE []float64
+	for i := 0; i < len(ciudades); i++ {
+		for j := 0; j < len(ciudades); j++ {
+			if distancias[i][j] != 0 {
+				totalAristasE = append(totalAristasE, distancias[i][j])
 			}
 		}
 	}
-	sort.Float64s(e)
-	return e
+	sort.Float64s(totalAristasE) // sorted ascending
+	return totalAristasE
 }
 
-// Normalizador como número
-// Recibimos la lista de las S aristas en E
-// Regresamos la suma de las n-1 aristas más pesadas de E
-func Normalizador(listaE []float64) float64 {
-	normalizador := 0.0
-	for i := 0; i < len(listaE)-1; i++ {
-		normalizador += listaE[i]
+// Regresa la distancia natural entre dos (u,v) ciudades dadas por su ID.
+// func distanciaNatural(u, v int, ciudadesID []int) float64 {
+func distanciaNatural(u, v int) float64 {
+	a := obtenerA(u, v)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+	return float64(radio) * c
+}
+
+// Regresa la coordenada dada en radianes.
+func radianes(coordenada float64) float64 {
+	return (coordenada*math.Pi)/180
+}
+
+// Obtiene A la fórmula del PDF.
+// func obtenerA (u, v int, ciudadesID []int) float64{
+func obtenerA (u, v int) float64{
+	latV, lonV := obtenerLatLon(v)
+	latU, lonU := obtenerLatLon(u)
+	sin1 := math.Pow(math.Sin((latV-latU)/2), 2)
+	sin2 := math.Pow(math.Sin((lonV-lonU)/2), 2)
+	cos1 := math.Cos(latU)
+	cos2 := math.Cos(latV)
+	return sin1 + cos1 * cos2 * sin2
+}
+
+// Obtiene la longitud y longitud de la ciudad con el ID i.
+// func obtenerLatLon(i int, ciudadesID []int) (latitud, longitud float64) {
+func obtenerLatLon(i int) (latitud, longitud float64) {
+	database, _ := sql.Open("sqlite3", "../base/tsp.db")
+	var lat, lon float64
+	rows, _ := database.Query("SELECT latitude, longitude FROM cities WHERE id = ?", i)
+	for rows.Next() {
+		rows.Scan(&lat, &lon)
 	}
-	return normalizador
+	return radianes(lat), radianes(lon)
 }
 
-// Suma todos los pesos (lineales) de la permutación, suma el i con el i-1
-func FuncionCostoSuma(ciudadesID []int) float64{
-	suma := 0.0
-	for i := 1; i < len(ciudadesID); i++ {
-		suma += getDistancia(ciudadesID[i-1], ciudadesID[i])
-	}
-	return suma	
+// Calcula el peso aumentado, o sea, la distancia natural por la máxima
+// distancia.
+func pesoAumentado(i, j int) float64 {
+	dist := distanciaNatural(i, j)
+	return dist * MaximaDist
 }
 
-// Regresa la funcion de costo
-// Recibe la lista(array/slice) cd ID's de ciudades
-func FuncionCosto(ciudadesID []int) float64{
-	listaMax := LlenaListaL(ciudadesID)
-	ns := Normalizador(listaMax)
-	suma := FuncionCostoSuma(ciudadesID)
-	return suma/ns
-}
-
-// Nos dice si dos aristas están en la gráfica normal
-func contenidasEnE(i, j int) bool {
-	// ver si están conectadas
-	return true;
-}
-
-// Regresa la distancia entre dos aristas
-func getDistancia(i, j int) float64 {
-	// regresar la distancia entre id i-j
-	return 0.0
+func Init(ciudadesID []int) {
+	ID = ciudadesID
+	Distancias = completa(ciudadesID)
+	AristasE = totalAristas(Distancias, ID)
+	MaximaDist = AristasE[len(AristasE)-1]
 }
