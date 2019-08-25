@@ -3,7 +3,6 @@ package funciones
 import (
 	"sort"
 	"math"
-
 	"database/sql"
 	// "fmt"
 	_ "github.com/mattn/go-sqlite3"
@@ -18,8 +17,6 @@ var MaximaDist float64
 
 // Calcula la funcion de costo, recibe los ID's de las ciudades, las distancias y
 // la máxima distancia.
-// func FunCosto(ciudadesID []int, distancias [][]float64, max float64) float64 {
-// func FunCosto(ciudadesID []int, distancias [][]float64) float64 {
 func FunCosto(ciudadesID []int) float64 {
 	suma := 0.0
 	for i := 1; i < len(ciudadesID); i++ {
@@ -33,7 +30,6 @@ func FunCosto(ciudadesID []int) float64 {
 }
 
 // Regresa la suma de las últimas k aristas
-// func Normalizador(aristas []float64, k int) float64 {
 func Normalizador() float64 {
 	suma := 0.0
 	end := len(AristasE)-len(ID)
@@ -44,14 +40,16 @@ func Normalizador() float64 {
 }
 
 // Dados los ID's, regresa la matriz de la gráfica completa de los ID's
-func completa(ciudades []int) [][]float64{ //hay quepasar las ciudades, pero las tengo abajo
+func completa(ciudades []int) [][]float64{
 	var matriz = [][]float64{}
+	var query = "SELECT distance FROM connections WHERE id_city_1 = ? AND id_city_2 = ?"
 	database, _ := sql.Open("sqlite3", "../base/tsp.db")
 	for i := 0; i < len(ciudades); i++ {
 		adyacentes := make([]float64, len(ciudades))
 		for j := 0; j < len(ciudades); j++ {
 			var distance float64
-			rows, _ := database.Query("SELECT distance FROM connections WHERE id_city_1 = ? AND id_city_2 = ?", ciudades[i], ciudades[j])
+			rows, _ := database.Query(query, ciudades[i],
+				ciudades[j])
 			for rows.Next() {
 				rows.Scan(&distance)
 				adyacentes[j] = distance
@@ -64,22 +62,21 @@ func completa(ciudades []int) [][]float64{ //hay quepasar las ciudades, pero las
 
 // Para cada par no ordenado si la arista está en distancias(en tsp.sql) la
 // agregamos a una lista, la cual está ordenada de menor a mayor.
-// func totalAristas(distancias [][]float64, ciudades []int) []float64{
 func totalAristas(distancias [][]float64, ciudades []int) []float64{
 	var totalAristasE []float64
 	for i := 0; i < len(ciudades); i++ {
 		for j := 0; j < len(ciudades); j++ {
 			if distancias[i][j] != 0 {
-				totalAristasE = append(totalAristasE, distancias[i][j])
+				totalAristasE = append(totalAristasE,
+					distancias[i][j])
 			}
 		}
 	}
-	sort.Float64s(totalAristasE) // sorted ascending
+	sort.Float64s(totalAristasE) // ordenado de menor a mayor
 	return totalAristasE
 }
 
 // Regresa la distancia natural entre dos (u,v) ciudades dadas por su ID.
-// func distanciaNatural(u, v int, ciudadesID []int) float64 {
 func distanciaNatural(u, v int) float64 {
 	a := obtenerA(u, v)
 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
@@ -92,7 +89,6 @@ func radianes(coordenada float64) float64 {
 }
 
 // Obtiene A la fórmula del PDF.
-// func obtenerA (u, v int, ciudadesID []int) float64{
 func obtenerA (u, v int) float64{
 	latV, lonV := obtenerLatLon(v)
 	latU, lonU := obtenerLatLon(u)
@@ -104,11 +100,11 @@ func obtenerA (u, v int) float64{
 }
 
 // Obtiene la longitud y longitud de la ciudad con el ID i.
-// func obtenerLatLon(i int, ciudadesID []int) (latitud, longitud float64) {
 func obtenerLatLon(i int) (latitud, longitud float64) {
 	database, _ := sql.Open("sqlite3", "../base/tsp.db")
 	var lat, lon float64
-	rows, _ := database.Query("SELECT latitude, longitude FROM cities WHERE id = ?", i)
+	rows, _ := database.Query(
+		"SELECT latitude, longitude FROM cities WHERE id = ?", i)
 	for rows.Next() {
 		rows.Scan(&lat, &lon)
 	}
