@@ -13,8 +13,8 @@ func main() {
 	
 	funciones.Init(ciudades40)
 	fmt.Println(funciones.ID)
-	fmt.Println(funciones.Distancias)
-	fmt.Println(funciones.AristasE)
+	// fmt.Println(funciones.Distancias)
+	// fmt.Println(funciones.AristasE)
 	fmt.Println("40 CIUDADES")
 	fmt.Printf("MAXIMA DISTANCIA\t%2.15f\n",funciones.MaximaDist)
 	fmt.Printf("NORMALIZADOR\t%2.15f\n",funciones.Normalizador())
@@ -32,8 +32,8 @@ func main() {
 		1038,1073,1075}
 	funciones.Init(ciudades150)
 	fmt.Println(funciones.ID)
-	fmt.Println(funciones.Distancias)
-	fmt.Println(funciones.AristasE)
+	// fmt.Println(funciones.Distancias)
+	// fmt.Println(funciones.AristasE)
 	fmt.Println("150 CIUDADES")
 	fmt.Printf("MAXIMA DISTANCIA\t%2.15f\n",funciones.MaximaDist)
 	fmt.Printf("NORMALIZADOR\t%2.15f\n",funciones.Normalizador())

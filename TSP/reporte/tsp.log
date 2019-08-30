@@ -1,11 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2019.7.28)  24 AUG 2019 20:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2019.8.27)  29 AUG 2019 23:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**tsp.tex
-(./tsp.tex
-LaTeX2e <2018-12-01>
-(/usr/share/texmf-dist/tex/latex/base/article.cls
+**\nonstopmode\input tsp.tex
+(./tsp.tex (/usr/share/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2018/09/03 v1.4i Standard LaTeX document class
 (/usr/share/texmf-dist/tex/latex/base/size12.clo
 File: size12.clo 2018/09/03 v1.4i Standard LaTeX file (size option)
@@ -256,13 +254,13 @@ Here is how much of TeX's memory you used:
  6476 multiletter control sequences out of 15000+600000
  6867 words of font info for 25 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,5n,28p,270b,188s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,5n,28p,289b,188s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texmf-dist/fonts/type1/public/amsfont
 s/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.p
 fb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on tsp.pdf (2 pages, 126624 bytes).
+Output written on tsp.pdf (2 pages, 126651 bytes).
 PDF statistics:
  34 PDF objects out of 1000 (max. 8388607)
  23 compressed objects within 1 object stream
