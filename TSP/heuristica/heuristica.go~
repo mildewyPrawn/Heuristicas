@@ -1,0 +1,15 @@
+package heuristica
+
+import (
+	
+	"fmt"
+)
+var mejor []int //mejor solucion
+// var epsilon = 
+
+func Vecino(solucion []int) []int{
+	var i, j int
+	// https://golang.org/pkg/crypto/rand/#Int
+	// https://stackoverflow.com/questions/32349807/how-can-i-generate-a-random-int-using-the-crypto-rand-package
+	return solucion
+}
