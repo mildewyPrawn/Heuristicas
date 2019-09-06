@@ -114,9 +114,42 @@ func Actualiza(vieja []int, i, j int, distTotal float64) float64{
 			distTotal -= funciones.Distancias[i][i+1] - funciones.Distancias[i+1][i]
 			fmt.Printf("ACTSIPrimeraC-2: \t%2.15f\n",distTotal)
 		} // Segunda arista borrar
-		if (funciones.Distancias[j][j+1] == 0) {}
-
-		fmt.Printf("DESPUESC-1: \t%2.15f\n",distTotal)
+		if (funciones.Distancias[j][j+1] == 0 && funciones.Distancias[j+1][j] == 0) { // Segunda arista borrar
+			distTotal -= funciones.PesoAumentado(vieja[j], vieja[j+1])
+			fmt.Printf("ACTNOSegundaC-2: \t%2.15f\n",distTotal)			
+		} else {
+			distTotal -= funciones.Distancias[j][j+1] - funciones.Distancias[j+1][j]
+			fmt.Printf("ACTSISegundaC-2: \t%2.15f\n",distTotal)
+		} // Tercer arista borrar
+		if (funciones.Distancias[j][j-1] == 0 && funciones.Distancias[j-1][j] == 0) {
+			distTotal -= funciones.PesoAumentado(vieja[j], vieja[j-1])
+			fmt.Printf("ACTNOTERCERAC-2: \t%2.15f\n",distTotal)
+		} else {
+			distTotal -= funciones.Distancias[j][j-1] - funciones.Distancias[j-1][j]
+			fmt.Printf("ACTSITERCERAC-2: \t%2.15f\n",distTotal)
+		} // Agregamos primera arista
+		if (funciones.Distancias[j][i+1] == 0 && funciones.Distancias[i+1][j] == 0) {
+			distTotal += funciones.PesoAumentado(vieja[j],vieja[i+1])
+			fmt.Printf("SumaPrimeraPESOAUMENTADOC-2: \t%2.15f\n",distTotal)
+		} else {
+			distTotal += funciones.Distancias[j][i+1] + funciones.Distancias[i+1][j]
+			fmt.Printf("SumaPrimeraDISTANCIANORMALC-2: \t%2.15f\n",distTotal)
+		} // Agregamos segunda arista
+		if (funciones.Distancias[i][j+1] == 0 && funciones.Distancias[j+1][i] == 0) {
+			distTotal += funciones.PesoAumentado(vieja[i], vieja[j+1])
+			fmt.Printf("SumaSegundaPESOAUMENTADOC-2: \t%2.15f\n",distTotal)
+		} else {
+			distTotal += funciones.Distancias[i][j+1] + funciones.Distancias[j+1][i]
+			fmt.Printf("SumaSegundaDISTANCIANORMALC-2: \t%2.15f\n",distTotal)
+		} // Agregamos tercera arista
+		if (funciones.Distancias[i][j-1] == 0 && funciones.Distancias[j-1][i] == 0) {
+			distTotal += funciones.PesoAumentado(vieja[i], vieja[j-1])
+			fmt.Printf("SumaTerceraPESOAUMENTADOC-2: \t%2.15f\n",distTotal)
+		} else {
+			distTotal += funciones.Distancias[i][j-1] + funciones.Distancias[j-1][i]
+			fmt.Printf("SumaTerceraDISTANCIANORMALC-2: \t%2.15f\n",distTotal)
+		}
+		fmt.Printf("DESPUESC-2: \t%2.15f\n",distTotal)
 		return distTotal
 
 
