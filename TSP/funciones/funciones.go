@@ -1,6 +1,8 @@
 package funciones
 
 import (
+	// "fmt"
+	
 	"sort"
 	"math"
 	"database/sql"
@@ -16,15 +18,17 @@ var MaximaDist float64
 
 // Calcula la funcion de costo, recibe los ID's de las ciudades, las distancias y
 // la máxima distancia.
+// func FunCosto(ciudadesID []int) (float64, float64) {
 func FunCosto(ciudadesID []int) float64 {
 	suma := 0.0
 	for i := 1; i < len(ciudadesID); i++ {
 		if (Distancias[i][i-1]) == 0 && Distancias[i-1][i] == 0 {
-			suma += pesoAumentado(ciudadesID[i], ciudadesID[i-1])
+			suma += PesoAumentado(ciudadesID[i], ciudadesID[i-1])
 		} else {
 			suma += Distancias[i][i-1] + Distancias[i-1][i]
 		}
 	}
+	// return suma/Normalizador(), suma
 	return suma/Normalizador()
 }
 
@@ -112,8 +116,9 @@ func obtenerLatLon(i int) (latitud, longitud float64) {
 
 // Calcula el peso aumentado, o sea, la distancia natural por la máxima
 // distancia.
-func pesoAumentado(i, j int) float64 {
+func PesoAumentado(i, j int) float64 {
 	dist := distanciaNatural(i, j)
+	// fmt.Printf("PESO AUMENTADO(%d-%d): \t%2.15f\n",i ,j, dist * MaximaDist)
 	return dist * MaximaDist
 }
 
