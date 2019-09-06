@@ -19,6 +19,8 @@ func main() {
 	fmt.Printf("MAXIMA DISTANCIA\t%2.15f\n",funciones.MaximaDist)
 	fmt.Printf("NORMALIZADOR\t%2.15f\n",funciones.Normalizador())
 	fmt.Printf("FUNCION DE COSTO\t%2.15f\n",funciones.FunCosto(ciudades40))
+	// costo40, suma40 := funciones.FunCosto(ciudades40)
+	// fmt.Printf("FUNCION DE COSTO\t%2.15f\t%2.15f\n",costo40, suma40)
 
 	var ciudades150 = []int{1,2,3,4,5,6,7,8,9,11,12,14,16,17,19,20,22,23,25,
 		26,27,74,75,77,163,164,165,166,167,168,169,171,172,173,174,176,
@@ -38,5 +40,7 @@ func main() {
 	fmt.Printf("MAXIMA DISTANCIA\t%2.15f\n",funciones.MaximaDist)
 	fmt.Printf("NORMALIZADOR\t%2.15f\n",funciones.Normalizador())
 	fmt.Printf("FUNCION DE COSTO\t%2.15f\n",funciones.FunCosto(ciudades150))
+	// costo150, suma150 := funciones.FunCosto(ciudades40)
+	// fmt.Printf("FUNCION DE COSTO\t%2.15f\t%2.15f\n",costo150, suma150)
 
 }
