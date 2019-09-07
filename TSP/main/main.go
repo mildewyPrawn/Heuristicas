@@ -3,38 +3,23 @@ package main
 import (
 	"fmt"
 	city "github.com/Heuristicas/TSP/funciones"
+	arg "github.com/Heuristicas/TSP/argumentos"
+	"os"
+	// heur "github.com/Heuristicas/TSP/heuristica"
 )
 
 func main() {
-	var ciudades40 = []int{1,2,3,4,5,6,7,75,163,164,165,168,172,327,329,331,
-		332,333,489,490,491,492,493,496,652,653,654,656,657,792,815,816,
-		817,820,978,979,980,981,982,984}
+	if (len(os.Args) < 2) {
+		fmt.Println("Falta el archivo de ciudades D:")
+		os.Exit(1)
+	}
+	nombre := os.Args[1] // Nombre archivo con ciudades
+	ciudades, saludo := arg.Leer(nombre) // ciudades y nombre limpio
+	fmt.Println(saludo)
 
-	var ciudades150 = []int{1,2,3,4,5,6,7,8,9,11,12,14,16,17,19,20,22,23,25,
-		26,27,74,75,77,163,164,165,166,167,168,169,171,172,173,174,176,
-		179,181,182,183,184,185,186,187,297,326,327,328,329,330,331,332,
-		333,334,336,339,340,343,344,345,346,347,349,350,351,352,353,444,
-		483,489,490,491,492,493,494,495,496,499,500,501,502,504,505,507,
-		508,509,510,511,512,520,652,653,654,655,656,657,658,660,661,662,
-		663,665,666,667,668,670,671,673,674,675,676,678,792,815,816,817,
-		818,819,820,821,822,823,825,826,828,829,832,837,839,840,978,979,
-		980,981,982,984,985,986,988,990,991,995,999,1001,1003,1004,1037,
-		1038,1073,1075}
-
-	fmt.Println("\n\n40 CIUDADES\n\n")
-
-	c40 := city.NewCiudades(ciudades40)
-	c40.TotalAristas()
-	c40.Normalizador()
-	c40.FunCosto()
-	c40.PrintCiudad()
-
-	fmt.Println("\n\n150 CIUDADES\n\n")
-
-	
-	c150 := city.NewCiudades(ciudades150)
-	c150.TotalAristas()
-	c150.Normalizador()
-	c150.FunCosto()
-	c150.PrintCiudad()
+	c := city.NewCiudades(ciudades)
+	c.TotalAristas()
+	c.Normalizador()
+	c.FunCosto()
+	c.PrintCiudad()
 }
