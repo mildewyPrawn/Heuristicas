@@ -10,7 +10,6 @@ type Ciudadeser interface {
 	FunCosto()
 	PrintCiudad()
 	Normalizador()
-	// Init()
 }
 
 type ciudades struct {
@@ -57,7 +56,6 @@ func (c *ciudades) Normalizador() {
 		suma += c.aristasE[i]
 	}
 	c.normalizador = suma
-	// return suma
 }
 
 // Funcion que calcula el numerador de la funcion de costo, hay que divirlo
@@ -80,7 +78,6 @@ func (c *ciudades) FunCosto() {
 }
 
 func NewCiudades(ciudadesId []int) Ciudadeser {
-	// return &ciudades{id: ciudadesId}
 	return &ciudades{
 		id: ciudadesId,
 		distancias: completa(ciudadesId),
