@@ -2,26 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/Heuristicas/TSP/funciones"
+	city "github.com/Heuristicas/TSP/funciones"
 )
 
 func main() {
 	var ciudades40 = []int{1,2,3,4,5,6,7,75,163,164,165,168,172,327,329,331,
 		332,333,489,490,491,492,493,496,652,653,654,656,657,792,815,816,
 		817,820,978,979,980,981,982,984}
-
-	
-	
-	funciones.Init(ciudades40)
-	fmt.Println(funciones.ID)
-	// fmt.Println(funciones.Distancias)
-	// fmt.Println(funciones.AristasE)
-	fmt.Println("40 CIUDADES")
-	fmt.Printf("MAXIMA DISTANCIA\t%2.15f\n",funciones.MaximaDist)
-	fmt.Printf("NORMALIZADOR\t%2.15f\n",funciones.Normalizador())
-	fmt.Printf("FUNCION DE COSTO\t%2.15f\n",funciones.FunCosto(ciudades40))
-	// costo40, suma40 := funciones.FunCosto(ciudades40)
-	// fmt.Printf("FUNCION DE COSTO\t%2.15f\t%2.15f\n",costo40, suma40)
 
 	var ciudades150 = []int{1,2,3,4,5,6,7,8,9,11,12,14,16,17,19,20,22,23,25,
 		26,27,74,75,77,163,164,165,166,167,168,169,171,172,173,174,176,
@@ -33,15 +20,21 @@ func main() {
 		818,819,820,821,822,823,825,826,828,829,832,837,839,840,978,979,
 		980,981,982,984,985,986,988,990,991,995,999,1001,1003,1004,1037,
 		1038,1073,1075}
-	funciones.Init(ciudades150)
-	fmt.Println(funciones.ID)
-	// fmt.Println(funciones.Distancias)
-	// fmt.Println(funciones.AristasE)
-	fmt.Println("150 CIUDADES")
-	fmt.Printf("MAXIMA DISTANCIA\t%2.15f\n",funciones.MaximaDist)
-	fmt.Printf("NORMALIZADOR\t%2.15f\n",funciones.Normalizador())
-	fmt.Printf("FUNCION DE COSTO\t%2.15f\n",funciones.FunCosto(ciudades150))
-	// costo150, suma150 := funciones.FunCosto(ciudades40)
-	// fmt.Printf("FUNCION DE COSTO\t%2.15f\t%2.15f\n",costo150, suma150)
 
+	fmt.Println("\n\n40 CIUDADES\n\n")
+
+	c40 := city.NewCiudades(ciudades40)
+	c40.TotalAristas()
+	c40.Normalizador()
+	c40.FunCosto()
+	c40.PrintCiudad()
+
+	fmt.Println("\n\n150 CIUDADES\n\n")
+
+	
+	c150 := city.NewCiudades(ciudades150)
+	c150.TotalAristas()
+	c150.Normalizador()
+	c150.FunCosto()
+	c150.PrintCiudad()
 }

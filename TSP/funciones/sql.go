@@ -11,27 +11,22 @@ const QUERY_IDS = "SELECT distance FROM connections WHERE id_city_1 = ? AND id_c
 const QUERY_LAT_LON = "SELECT latitude, longitude FROM cities WHERE id = ?"
 
 // Conexiona a la base de datos
-//
-// No estoy seguro de que funcione, sino, la regreso dentro de las funciones
-// 
 var database, _ = sql.Open("sqlite3", "../base/tsp.db") // No sé si funciona chido
 
 // Regresa la latitud y longitud de una ciudad dada por su ID
 func obtenerLatLon(i int) (latitud, longitud float64) {
-	// database, _ := sql.Open("sqlite3", "../base/tsp.db")
 	var lat, lon float64
 	rows, _ := database.Query(QUERY_LAT_LON, i)
 	for rows.Next() {
 		rows.Scan(&lat, &lon)
 	}
-	return lat, lon
+	return radianes(lat), radianes(lon)
 }
 
 // Regresa la representación de la gráfica dados los ID
 // Solo son las ciudades que están conectadas
 func completa(ciudades []int) [][]float64 {
 	var matriz = [][]float64{}
-	// database, _ := sql.Open()
 	for i := 0; i < len(ciudades); i++ {
 		adyacentes := make([]float64, len(ciudades))
 		for j := 0; j < len(ciudades); j++ {
