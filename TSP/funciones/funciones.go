@@ -6,56 +6,56 @@ import (
 )
 
 type Ciudadeser interface {
-	TotalAristas()
-	FunCosto()
 	PrintCiudad()
-	Normalizador()
+	GetDistTotal() float64
+	FunCosto()
 }
 
 type ciudades struct {
-	id []int
-	distancias [][]float64
-	aristasE []float64
-	costo float64 // Sin normalizador
-	normalizador float64
+	Id []int
+	Distancias [][]float64
+	AristasE []float64
+	Costo float64 // Sin normalizador
+	Normalizador float64
 }
 
 func (c ciudades) PrintCiudad() {
-	fmt.Println(c.id)
+	fmt.Println(c.Id)
 	fmt.Printf("MAX DIST:\t%2.15f\nDISTOT:\t%2.15f\n", 
-		c.aristasE[len(c.aristasE)-1], c.costo)
-	fmt.Printf("NORMALIZADOR:\t%2.15f\n",c.normalizador)
-	fmt.Printf("FUNCOSTO:\t%2.15f\n",c.costo/c.normalizador)
+		c.AristasE[len(c.AristasE)-1], c.Costo)
+	fmt.Printf("NORMALIZADOR:\t%2.15f\n",c.Normalizador)
+	fmt.Printf("FUNCOSTO:\t%2.15f\n",c.Costo/c.Normalizador)
 }
 
 // Para cada par no ordenado, si la arista está en las distancias (tsp.sql), la
 // agregamos a una lista
 // Regresa todas las aristas en E
-func (c *ciudades) TotalAristas() {
+func totalAristas(ciudadesId []int, distancias [][]float64) []float64 {
 	var totalAristas []float64
-	for i := 0; i < len(c.id); i++ {
+	for i := 0; i < len(ciudadesId); i++ {
 		// ¿j = i?
-		for j := 0; j < len(c.id); j++ {
+		for j := 0; j < len(ciudadesId); j++ {
 			// Si está en las distancias agregamos
-			if c.distancias[i][j] != 0 {
+			if distancias[i][j] != 0 {
 				totalAristas = append(totalAristas,
-					c.distancias[i][j])
+					distancias[i][j])
 			}
 		}
 	}
 	sort.Float64s(totalAristas) // Ordenadonn de menor a mayor
-	c.aristasE = totalAristas
+	return totalAristas
 }
 
 // Regresa la suma de las últimas k aristas
 // Recibe todas las aristas en E y todas las ciudades
-func (c *ciudades) Normalizador() {
+func GetNormalizador(aristasE []float64, ciudadesId []int) float64 {
 	suma := 0.0
-	end := len(c.aristasE)-len(c.id)
-	for i := len(c.aristasE)-1; i > end; i-- {
-		suma += c.aristasE[i]
+	end := len(aristasE)-len(ciudadesId)
+	for i := len(aristasE)-1; i > end; i-- {
+		suma += aristasE[i]
 	}
-	c.normalizador = suma
+	// c.Normalizador = suma
+	return suma
 }
 
 // Funcion que calcula el numerador de la funcion de costo, hay que divirlo
@@ -65,21 +65,31 @@ func (c *ciudades) Normalizador() {
 // Regresa la suma de las distancias de la arista (i, i-1)
 func (c *ciudades) FunCosto() {
 	suma := 0.0
-	for i := 1; i < len(c.id); i++ {
-		if (c.distancias[i][i-1] == 0 && c.distancias[i-1][i] == 0) {
-			suma += pesoAumentado(c.id[i], c.id[i-1],
-				c.aristasE[len(c.aristasE)-1])
+	for i := 1; i < len(c.Id); i++ {
+		if (c.Distancias[i][i-1] == 0 && c.Distancias[i-1][i] == 0) {
+			suma += pesoAumentado(c.Id[i], c.Id[i-1],
+				c.AristasE[len(c.AristasE)-1])
 		} else {
 			// No sabemos en qué parte de la matriz esta
-			suma += c.distancias[i][i-1] + c.distancias[i-1][i]
+			suma += c.Distancias[i][i-1] + c.Distancias[i-1][i]
 		}
 	}
-	c.costo = suma
+	c.Costo = suma
+}
+
+// Creo que es un getter :o
+func (c *ciudades) GetDistTotal() float64 {
+	return c.Costo
 }
 
 func NewCiudades(ciudadesId []int) Ciudadeser {
+	dista := completa(ciudadesId)
+	arist := totalAristas(ciudadesId, dista)
+	norma := GetNormalizador(arist, ciudadesId)
 	return &ciudades{
-		id: ciudadesId,
-		distancias: completa(ciudadesId),
+		Id: ciudadesId,
+		Distancias: dista,
+		AristasE: arist,
+		Normalizador: norma,
 	}
 }

@@ -16,9 +16,8 @@ func main() {
 	nombre := os.Args[1] // Nombre archivo con ciudades
 	ciudades, saludo := arg.Leer(nombre) // ciudades y nombre limpio
 	fmt.Println(saludo)
-	c := city.NewCiudades(ciudades)
-	c.TotalAristas()
-	c.Normalizador()
-	c.FunCosto()
+	
+	c := city.NewCiudades(ciudades)	
+	c.FunCosto() //Esta así y no desde el "constructor" para poder seguirla calculando
 	c.PrintCiudad()	
 }
