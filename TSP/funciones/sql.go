@@ -6,12 +6,14 @@ import (
 )
 
 // Query para seleccionar conexiones
-const QUERY_IDS = "SELECT distance FROM connections WHERE id_city_1 = ? AND id_city_2 = ?"
+const QUERY_IDS =
+	"SELECT distance FROM connections WHERE id_city_1 = ? AND id_city_2 = ?"
 // Query para seleccionar latitud y longitud
-const QUERY_LAT_LON = "SELECT latitude, longitude FROM cities WHERE id = ?"
+const QUERY_LAT_LON =
+	"SELECT latitude, longitude FROM cities WHERE id = ?"
 
 // Conexiona a la base de datos
-var database, _ = sql.Open("sqlite3", "../base/tsp.db") // No sé si funciona chido
+var database, _ = sql.Open("sqlite3", "../base/tsp.db")
 
 // Regresa la latitud y longitud de una ciudad dada por su ID
 func obtenerLatLon(i int) (latitud, longitud float64) {
