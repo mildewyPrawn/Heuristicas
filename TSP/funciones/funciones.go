@@ -7,11 +7,15 @@ import (
 
 type Ciudadeser interface {
 	PrintCiudad()
+	GetNormalizador() float64
 	GetDistTotal() float64
+	GetDistancias() [][]float64
+	GetAristasE() []float64
+	SetId([]int)
 	FunCosto()
 }
 
-type ciudades struct {
+type Ciudades struct {
 	Id []int
 	Distancias [][]float64
 	AristasE []float64
@@ -19,7 +23,7 @@ type ciudades struct {
 	Normalizador float64
 }
 
-func (c ciudades) PrintCiudad() {
+func (c Ciudades) PrintCiudad() {
 	fmt.Println(c.Id)
 	fmt.Printf("MAX DIST:\t%2.15f\nDISTOT:\t%2.15f\n", 
 		c.AristasE[len(c.AristasE)-1], c.Costo)
@@ -63,7 +67,7 @@ func GetNormalizador(aristasE []float64, ciudadesId []int) float64 {
 // Recibe los id de las ciudades
 // Recibe la matriz con las distancias
 // Regresa la suma de las distancias de la arista (i, i-1)
-func (c *ciudades) FunCosto() {
+func (c *Ciudades) FunCosto() {
 	suma := 0.0
 	for i := 1; i < len(c.Id); i++ {
 		if (c.Distancias[i][i-1] == 0 && c.Distancias[i-1][i] == 0) {
@@ -77,16 +81,51 @@ func (c *ciudades) FunCosto() {
 	c.Costo = suma
 }
 
+func FunCostoSolucion(id []int, distancias [][]float64,
+	aristas []float64) float64 {
+	suma := 0.0
+	for i := 1; i < len(id); i++ {
+		if (distancias[i][i-1] == 0 && distancias[i-1][i] == 0) {
+			suma += pesoAumentado(id[i], id[i-1],
+				aristas[len(aristas)-1])
+		} else {
+			// No sabemos en qué parte de la matriz esta
+			suma += distancias[i][i-1] + distancias[i-1][i]
+		}
+	}
+	return suma
+}
+
 // Creo que es un getter :o
-func (c *ciudades) GetDistTotal() float64 {
+func (c *Ciudades) GetDistTotal() float64 {
 	return c.Costo
+}
+
+func (c *Ciudades) GetNormalizador() float64 {
+	return c.Normalizador
+}
+
+func (c *Ciudades) GetId() []int {
+	return c.Id
+}
+
+func (c *Ciudades) GetDistancias() [][]float64 {
+	return c.Distancias
+}
+
+func (c *Ciudades) GetAristasE() []float64 {
+	return c.AristasE
+}
+
+func (c *Ciudades) SetId(id []int) {
+	c.Id = id
 }
 
 func NewCiudades(ciudadesId []int) Ciudadeser {
 	dista := completa(ciudadesId)
 	arist := totalAristas(ciudadesId, dista)
 	norma := GetNormalizador(arist, ciudadesId)
-	return &ciudades{
+	return &Ciudades{
 		Id: ciudadesId,
 		Distancias: dista,
 		AristasE: arist,

@@ -2,10 +2,17 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"crypto/rand"
 	"math/big"
 	city "github.com/Heuristicas/TSP/funciones"
 )
+
+type ciudades = city.Ciudades
+
+const TAMLOTE = 100
+const PHI = .75
+const EPSILON = .0000001
 
 // Genera un número random
  // Regresa un número entre [0, i)
@@ -38,11 +45,53 @@ func swap(i, j int, actual []int) []int {
 	return nuevo;
 }
 
-func Vecino(actual []int) ([]int, int, int) {
+// Regresa índices distintos 
+// func Vecino(actual []int) ([]int, int, int) {
+func Vecino(actual []int) []int {
 	i := randInt(len(actual))
 	j := randInt(len(actual))
+	for i == j {
+		i = randInt(len(actual))
+	}
 	nuevo := swap(i, j, actual)
-	return nuevo, i, j
+	return nuevo
+	// return nuevo, i, j
+}
+
+func calculaLote(temperatura float64, ciudad *ciudades) (float64, []int) {
+	c := 0
+	r := 0.0
+	i := 0
+	norm := ciudad.GetNormalizador()
+	dist := ciudad.GetDistancias()
+	for c < TAMLOTE || i <= TAMLOTE*TAMLOTE {
+		sPrima := Vecino(ciudad.Id)
+		fsP := city.FunCostoSolucion(sPrima, dist, ciudad.GetAristasE())
+		if fsP/norm <= ciudad.Costo/norm + temperatura {
+			ciudad.SetId(sPrima)
+			c++
+			ciudad.FunCosto()
+			r = r + ciudad.GetDistTotal()/norm
+		}
+		i++
+	}
+	return (r/TAMLOTE), ciudad.Id
+}
+
+// Creo que ya está lo de calcular LOTE.
+// tuve que cambiar ciudades por Ciudades ***** quizá eso sea importante después
+
+func aceptacionPorUmbrales(temperatura float64, ciudad *ciudades) {
+	p := 0
+	for temperatura > EPSILON {
+		q = math.MaxFloat64
+		for p <= q {
+			q = p
+			//problemas con las firmas y lo que regreso
+			p, s := calculaLote(temperatura, ciudad) //oh oh
+		}
+		temperatura = PHI*temperatura
+	}
 }
 
 func main() {
@@ -51,8 +100,6 @@ func main() {
 		817,820,978,979,980,981,982,984}
 
 	c := city.NewCiudades(ciudades40)
-	c.TotalAristas()
-	c.GetNormalizador()
 	c.FunCosto()
 	// c.PrintCiudad()
 
@@ -62,13 +109,15 @@ func main() {
 	// randArray := swap(0,1, ciudades40)
 	// fmt.Println(randArray)
 
-	vecinoC40, i, j := Vecino(ciudades40)
-	fmt.Printf("%d----%d\n", i, j)
+
+
+
+	// vecinoC40, i, j := Vecino(ciudades40)
+	vecinoC40 := Vecino(ciudades40)
+	// fmt.Printf("%d----%d\n", i, j)
 	fmt.Println(vecinoC40)
 
 	v := city.NewCiudades(vecinoC40)
-	v.TotalAristas()
-	v.GetNormalizador()
 	v.FunCosto()
 	v.PrintCiudad()
 	costoV := v.GetDistTotal()
