@@ -9,10 +9,13 @@ import (
 )
 
 type ciudades = city.Ciudades
+var ciudadeser interface{} = "hola"
 
 const TAMLOTE = 100
 const PHI = .75
 const EPSILON = .0000001
+const P = .90
+const EPSILONP = .0000001
 
 // Genera un número random
  // Regresa un número entre [0, i)
@@ -58,6 +61,21 @@ func Vecino(actual []int) []int {
 	// return nuevo, i, j
 }
 
+
+
+
+
+
+// QUIZA SEA BUENO PASAR TODO A FUNCIONES (?)
+
+
+
+
+
+
+
+
+
 func calculaLote(temperatura float64, ciudad *ciudades) (float64, []int) {
 	c := 0
 	r := 0.0
@@ -81,17 +99,83 @@ func calculaLote(temperatura float64, ciudad *ciudades) (float64, []int) {
 // Creo que ya está lo de calcular LOTE.
 // tuve que cambiar ciudades por Ciudades ***** quizá eso sea importante después
 
-func aceptacionPorUmbrales(temperatura float64, ciudad *ciudades) {
-	p := 0
+func aceptacionPorUmbrales(temperatura float64, ciudad *ciudades) []int{
+	s := ciudad.GetId()
+	p := 0.0
 	for temperatura > EPSILON {
-		q = math.MaxFloat64
+		q := math.MaxFloat64
 		for p <= q {
 			q = p
 			//problemas con las firmas y lo que regreso
-			p, s := calculaLote(temperatura, ciudad) //oh oh
+			p, s = calculaLote(temperatura, ciudad) //oh oh
 		}
 		temperatura = PHI*temperatura
 	}
+	// ¿Mejor solucion?
+	return s
+}
+
+// Necesito recibir una perra ciudad
+// func PorcentajeAceptados(s []int, t float64) float64 {
+func PorcentajeAceptados(ciudad *ciudades, temperatura float64) float64 {
+	norm := ciudad.GetNormalizador()
+	dist := ciudad.GetDistancias()
+	c := 0.0
+	// ¿Qué es N?
+	for i := 0; i < len(ciudad.Id); i++ {
+		sP := Vecino(ciudad.Id)
+		fsP := city.FunCostoSolucion(sP, dist, ciudad.GetAristasE())
+		if (fsP/norm <= ciudad.Costo/norm + temperatura) {
+			c++
+			ciudad.SetId(sP)
+		}
+	}
+	return c/float64(len(ciudad.Id))
+}
+
+// Mi pMayos (PDF) es P en cont
+// func BusquedaBinaria(s []int, t1, t2 float64) float64 {
+func BusquedaBinaria(ciudad *ciudades, t1, t2 float64) float64 {
+	// s := ciudad.Id
+	// return 0.0
+	tm := (t1 + t2)/2.0
+	if (t2 - t1 < EPSILONP) {
+		return tm
+	}
+	p := PorcentajeAceptados(ciudad, tm)
+	if (math.Abs(P - p) < EPSILONP) {
+		return tm
+	}
+	if (p > P) {
+		return BusquedaBinaria(ciudad, t1, tm)
+	} else {
+		return BusquedaBinaria(ciudad, tm, t2)
+	}
+}
+
+func TemperaturaInicial(ciudad *ciudades, t float64) float64 {
+	p := PorcentajeAceptados(ciudad, t)
+	t1 := 0.0
+	t2 := 0.0
+	if math.Abs(P - p) <= EPSILONP {
+		return t
+	}
+	if p < P {
+		for p < P {
+			t = 2.0*t
+			p = PorcentajeAceptados(ciudad, t)
+		}
+		t1 = t*2.0
+		t2 = t
+	} else {
+		for p > P {
+			t = t/2.0
+			p = PorcentajeAceptados(ciudad, t)
+		}
+		t1 = t
+		t2 = 2.0*t
+	}
+	return BusquedaBinaria(ciudad, t1, t2)
 }
 
 func main() {
@@ -109,8 +193,11 @@ func main() {
 	// randArray := swap(0,1, ciudades40)
 	// fmt.Println(randArray)
 
+	
+	
+	sol := aceptacionPorUmbrales(13, c)
 
-
+	// fmt.Println(sol)
 
 	// vecinoC40, i, j := Vecino(ciudades40)
 	vecinoC40 := Vecino(ciudades40)
@@ -119,9 +206,9 @@ func main() {
 
 	v := city.NewCiudades(vecinoC40)
 	v.FunCosto()
-	v.PrintCiudad()
-	costoV := v.GetDistTotal()
-	fmt.Println("------------------------%2.15f---------------", costoV)
+	// v.PrintCiudad()
+	// costoV := v.GetDistTotal()
+	// fmt.Println("------------------------%2.15f---------------", costoV)
 	// fmt.Println(v.costo/v.normalizador)
 	
 }
