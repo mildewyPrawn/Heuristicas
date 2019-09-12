@@ -2,6 +2,8 @@ package funciones
 
 import (
 	"math"
+	"math/big"
+	"crypto/rand"
 )
 
 // Constante del radio de la tierra aproximado
@@ -37,4 +39,13 @@ func obtenerA (u, v int) float64 {
 func pesoAumentado(i, j int, max float64) float64 {
 	dist := distanciaNatural(i, j)
 	return dist * max
+}
+
+func randInt(i int) int {
+	nBig, err := rand.Int(rand.Reader, big.NewInt(int64(i)))
+	if err != nil {
+		panic(err)
+	}
+	n := nBig.Int64()
+	return int(n)
 }

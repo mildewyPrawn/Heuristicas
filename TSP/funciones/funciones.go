@@ -54,7 +54,13 @@ func totalAristas(ciudadesId []int, distancias [][]float64) []float64 {
 // Recibe todas las aristas en E y todas las ciudades
 func GetNormalizador(aristasE []float64, ciudadesId []int) float64 {
 	suma := 0.0
-	end := len(aristasE)-len(ciudadesId)
+	// end := len(aristasE)-len(ciudadesId)
+	end := 0
+	if  len(aristasE) < len(ciudadesId)-1{
+		end = len(aristasE)
+	} else {
+		end = len(aristasE)-len(ciudadesId)
+	}
 	for i := len(aristasE)-1; i > end; i-- {
 		suma += aristasE[i]
 	}
