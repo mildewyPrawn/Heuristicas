@@ -8,15 +8,14 @@ import (
 	"strconv"
 )
 
-const PATH = "../ejemplos/"
+// const PATH = "../ejemplos/"
 const CIUDADES = "ciudades"
 
 // Leemos el archivo
 // Regresa las ciudades en un slice
 // Regresa el nombre "ciudadesXX" 
-func Leer(lectura string) ([]int, string){
-	lectura = PATH+lectura
-	archivo, err := os.Open(lectura)
+func Leer(path string) ([]int, string){
+	archivo, err := os.Open(path)
 
 	if (err != nil) {
 		fmt.Println("TSP: Error al leer el archivo.")
