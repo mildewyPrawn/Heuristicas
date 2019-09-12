@@ -8,6 +8,12 @@ import (
 
 // Constante del radio de la tierra aproximado
 const radio = 6373000
+// medidas que son las que debería ir ajustando
+const TAMLOTE = 100
+const PHI = .75
+const EPSILON = .0001
+const EPSILONP = .0001
+const P = .90
 
 // Convierte una coordenada a radianes
 // Regresa la coordenada en radianes
@@ -41,6 +47,8 @@ func pesoAumentado(i, j int, max float64) float64 {
 	return dist * max
 }
 
+// Genera un número random
+// Regresa un número entre [0, i)
 func randInt(i int) int {
 	nBig, err := rand.Int(rand.Reader, big.NewInt(int64(i)))
 	if err != nil {
@@ -48,4 +56,37 @@ func randInt(i int) int {
 	}
 	n := nBig.Int64()
 	return int(n)
+}
+
+// Copia un arreglo de ciudades, (O de enteros)
+// Regresa una copia de actual
+func copiarCiudades(actual []int) []int {
+	nuevo := make([]int, len(actual))
+	for i := 0; i < len(actual); i++ {
+		nuevo[i] = actual[i]
+	}
+	return nuevo
+}
+
+// Swapea un arreglo
+// Recibe dos indices para swapear
+// Regresa el arreglo con los indices intercambiados
+func swap(i, j int, ciudades []int) []int {
+	nuevo := copiarCiudades(ciudades)
+	nuevo[j] = ciudades[i]
+	nuevo[i] = ciudades[j]
+	return nuevo
+}
+
+// Obtiene un vecino en la gráfica
+// Recibe un arreglo de ciudades
+// Regresa un vecino en la grafica de actual
+func vecino(actual []int) []int {
+	i := randInt(len(actual))
+	j := randInt(len(actual))
+	for i == j {
+		i = randInt(len(actual))
+	}
+	nuevo := swap(i,j, actual)
+	return nuevo
 }
