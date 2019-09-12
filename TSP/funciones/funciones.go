@@ -1,6 +1,7 @@
 package funciones
 
 import (
+	"math"
 	"sort"
 	"fmt"
 )
@@ -8,11 +9,13 @@ import (
 type Ciudadeser interface {
 	PrintCiudad()
 	GetNormalizador() float64
-	GetDistTotal() float64
+	// GetDistTotal() float64
 	GetDistancias() [][]float64
 	GetAristasE() []float64
 	SetId([]int)
 	FunCosto()
+	AceptacionPorUmbrales(float64) []int
+	TemperaturaInicial(float64) float64
 }
 
 type Ciudades struct {
@@ -102,17 +105,112 @@ func FunCostoSolucion(id []int, distancias [][]float64,
 	return suma
 }
 
-// Creo que es un getter :o
-func (c *Ciudades) GetDistTotal() float64 {
-	return c.Costo
+// func calculaLote(t float64, ciudades *) (float64, []int) {
+func calculaLote(t float64, ciu*Ciudades) (float64, []int) {
+	fmt.Println("CALCULA LOTE")
+	distancias := ciu.Distancias
+	normaliz := ciu.Normalizador
+	c := 0
+	i := 0
+	r := 0.0
+	s := ciu.Id
+	for c < L && i < L*L{
+	// for c < L {
+		fmt.Printf("C(%d)-I(%d)\n", c, i)
+		sP := vecino(s)
+		fsP := FunCostoSolucion(s, distancias, ciu.AristasE)/normaliz
+		if fsP <= ciu.Costo/normaliz {
+			ciu.SetId(sP)
+			c++
+			r = r + fsP
+		}
+		i++;
+	}
+	return r/L, s
 }
 
-func (c *Ciudades) GetNormalizador() float64 {
-	return c.Normalizador
+// func AceptacionPorUmbrales(t float64, sol*Ciudades) []int{
+func (sol *Ciudades) AceptacionPorUmbrales(t float64) []int{
+	fmt.Println("ACEPTACION POR UMBRALES")
+	s := sol.Id
+	p := 0.0
+	for t > EPSILON {
+		q := math.MaxFloat64
+		for p <= q {
+			q = p
+			p, s = calculaLote(t, sol)
+			// printSol(p, s)
+		}
+		t = PHI*t
+	}
+	return s
 }
 
-func (c *Ciudades) GetId() []int {
-	return c.Id
+func porcentajeAceptados(sol*Ciudades, t float64) float64 {
+	fmt.Println("PORCENTAJE ACEPTADOS")
+	c := 0
+	for i := 0; i < len(sol.Id); i++ {
+		sP := vecino(sol.Id)
+		fsP := FunCostoSolucion(sol.Id, sol.Distancias, sol.AristasE)
+		norm := sol.Normalizador
+		if fsP/norm < sol.Costo/norm + t {
+			c++
+			sol.SetId(sP)
+		}
+	}
+	return float64(c)/float64(len(sol.Id))
+}
+
+func busquedaBinaria(s*Ciudades, t1, t2 float64) float64{
+	fmt.Println("BUSQUEDA BINARIA")
+	tm := (t1+t2)/2
+	if t2 - t1 < EPSILONP {
+		return tm
+	}
+	p := porcentajeAceptados(s, tm)
+	if math.Abs(P - p) < EPSILONP {
+		return tm
+	}
+	if p > P {
+		return busquedaBinaria(s, t1, tm)
+	} else {
+		return busquedaBinaria(s, tm, t2)
+	}
+}
+
+// func temperaturaInicial(s*Ciudades, t float64) float64 {
+func (s *Ciudades) TemperaturaInicial(t float64) float64 {
+	fmt.Println("TEMPERATURA INICIAL")
+	p := porcentajeAceptados(s, t)
+	var t1, t2 float64
+	if math.Abs(P - p) <= EPSILONP {
+		return t
+	}
+	if p < P {
+		for p < P {
+			t = 2*t
+			p  = porcentajeAceptados(s, t)
+		}
+		t1 = t/2
+		t2 = t
+	} else {
+		for p > P {
+			t = t/2
+			p = porcentajeAceptados(s, t)
+		}
+		t1 = t
+		t2 = 2*t
+	}
+	return busquedaBinaria(s, t1, t2)
+}
+
+func printSol(p float64, s []int) {
+	fmt.Printf("Costo: %2.15f\t con ciudades:\n", p)
+	fmt.Println(s)
+}
+
+func (c *Ciudades) SetId(id []int) {
+	c.Id = id
 }
 
 func (c *Ciudades) GetDistancias() [][]float64 {
@@ -123,8 +221,8 @@ func (c *Ciudades) GetAristasE() []float64 {
 	return c.AristasE
 }
 
-func (c *Ciudades) SetId(id []int) {
-	c.Id = id
+func (c *Ciudades) GetNormalizador() float64 {
+	return c.Normalizador
 }
 
 func NewCiudades(ciudadesId []int) Ciudadeser {

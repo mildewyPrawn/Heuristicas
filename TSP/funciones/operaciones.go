@@ -9,7 +9,7 @@ import (
 // Constante del radio de la tierra aproximado
 const radio = 6373000
 // medidas que son las que debería ir ajustando
-const TAMLOTE = 100
+const L = 300
 const PHI = .75
 const EPSILON = .0001
 const EPSILONP = .0001
