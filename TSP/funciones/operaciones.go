@@ -52,7 +52,7 @@ func pesoAumentado(i, j int, max float64) float64 {
 
 // Copia un arreglo de ciudades, (O de enteros)
 // Regresa una copia de actual
-func copiarCiudades(actual []int) []int {
+func CopiarCiudades(actual []int) []int {
 	nuevo := make([]int, len(actual))
 	for i := 0; i < len(actual); i++ {
 		nuevo[i] = actual[i]
@@ -64,7 +64,7 @@ func copiarCiudades(actual []int) []int {
 // Recibe dos indices para swapear
 // Regresa el arreglo con los indices intercambiados
 func swap(i, j int, ciudades []int) []int {
-	nuevo := copiarCiudades(ciudades)
+	nuevo := CopiarCiudades(ciudades)
 	nuevo[j] = ciudades[i]
 	nuevo[i] = ciudades[j]
 	return nuevo
