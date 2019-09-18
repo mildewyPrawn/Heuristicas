@@ -1,3 +1,59 @@
 reporte
 hacer que pasen las pruebas :'v
 no recalcular la funcion de costo desde 0 ¿SegmentTree?
+
+
+
+// func calculaLote(t float64, ciudades *) (float64, []int) {
+func calculaLote(t float64, ciu *Ciudades, sol *Solucion) (float64, []int) {
+	dist := ciu.Distancias
+	norm := sol.normalizador
+	c := 0
+	i := 0
+	r := 0.0
+	// s := ciu.Id
+	s := sol.actual
+	for c < L {
+		sP := vecino(s)
+		fsP := FunCostoSolucion(s, dist, ciu.AristasE)/norm
+		if fsP <= sol.actualC/norm + t {
+			sol.actual = sP
+			sol.actualC = fsP
+			if fsP < sol.mejorC {
+				sol.mejor = sP
+				sol.mejorC = fsP
+			}
+			s = sP
+			c++
+			r = r + fsP
+		}
+		i++;
+		if i > L*L {
+			return r/L, s
+		}
+	}
+	return r/L, s
+}
+
+// func AceptacionPorUmbrales(t float64, sol*Ciudades) []int{
+func (c *Ciudades) AceptacionPorUmbrales(t float64, sol *Solucion) []int{
+	// fmt.Println("ACEPTACION POR UMBRALES")
+	s := c.Id
+	p := 0.0
+	for t > EPSILON {
+		fmt.Println(t)
+		fmt.Println(EPSILONP)
+		q := math.MaxFloat64
+		// fmt.Println("Antes del p<q")
+		for p < q {
+			// fmt.Println("en el p<q")
+			q = p
+			p, s = calculaLote(t, c, sol)
+			
+		}
+		t = PHI*t
+	}
+	return s
+}
+
+
