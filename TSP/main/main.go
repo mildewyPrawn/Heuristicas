@@ -5,36 +5,46 @@ import (
 	city "github.com/Heuristicas/TSP/funciones"
 	arg "github.com/Heuristicas/TSP/argumentos"
 	"os"
+	"math/rand"
 	// heur "github.com/Heuristicas/TSP/heuristica"
 )
 
 func main() {
-	if (len(os.Args) < 2) {
-		fmt.Println("TSP: Falta el archivo de ciudades D:")
+	if (len(os.Args) < 3) {
+		fmt.Println("TSP: Falta el archivo de ciudades D:\nO la semilla")
 		os.Exit(1)
 	}
 	nombre := os.Args[1] // Nombre archivo con ciudades
-	ciudades, saludo := arg.Leer(nombre) // ciudades y nombre limpio
+	ciudades, saludo, seed := arg.Leer(nombre, os.Args[2]) // ciudades y nombre limpio
+	rand.Seed(int64(seed))
 	fmt.Println(saludo)
 	
 	c := city.NewCiudades(ciudades)	
 	c.FunCosto() //Esta así y no desde el "constructor" para poder seguirla calculando
 	c.PrintCiudad()
-
-
-
-	tInit := c.TemperaturaInicial(10000)
 	
 
+	s := city.NewSolucion(c.AristasE, c.Id, c.Distancias)
 
-	res := c.AceptacionPorUmbrales(tInit)
+
+	
+	
+	tInit := c.TemperaturaInicial(10, s)
+	fmt.Println(tInit)
+	
+	
+	res := c.AceptacionPorUmbrales(tInit, s)
 	fmt.Println(res)
-
-
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	// s.PrintData(c)
+	// fmt.Printf("\n%2.15f\n",s.nuevaC)
+	
 
 	
-	min := city.FunCostoSolucion(res, c.GetDistancias(), c.GetAristasE())
-	fmt.Printf("EL COSTO ES DE: %2.15f", min/c.GetNormalizador())
+	// min := city.FunCostoSolucion(res, c.GetDistancias(), c.GetAristasE())
+	// fmt.Printf("EL COSTO ES DE: %2.15f", min/c.GetNormalizador())
 
 
 	// [164 331 980 817 491 6 333 2 978 496 4 820 653 489 982 984 657 3 332 172 816 490 329 163 652 493 979 815 492 165 75 656 5 1 792 168 327 981 654 7]
