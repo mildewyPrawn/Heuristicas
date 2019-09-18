@@ -134,89 +134,30 @@ func FunCostoSolucion(id []int, distancias [][]float64,
 	return suma
 }
 
-// func calculaLote(t float64, ciudades *) (float64, []int) {
-func calculaLote(t float64, ciu *Ciudades, sol *Solucion) (float64, []int) {
-	dist := ciu.Distancias
-	norm := sol.normalizador
-	c := 0
-	i := 0
-	r := 0.0
-	// s := ciu.Id
-	s := sol.actual
-	for c < L {
-		fmt.Println("en el c<L")
-		// fmt.Printf("C(%d)-I(%d)\n", c, i)
-		sP := vecino(s)
-		fsP := FunCostoSolucion(s, dist, ciu.AristasE)/norm
-		fmt.Printf("%2.15f\n", fsP/norm)
-		fmt.Printf("%2.15f\n", sol.actualC/norm)
-		sol.PrintData()
-		fmt.Println(i)
-		if fsP <= sol.actualC/norm + t {
-			fmt.Println("en el fsP < actual")
-			sol.actual = sP
-			sol.actualC = fsP
-			if fsP < sol.mejorC {
-				sol.mejor = sP
-				sol.mejorC = fsP
-			}
-			s = sP
-			c++
-			r = r + fsP
-		}
-		i++;
-		if i > L*L {
-			return r/L, s
-		}
-	}
-	return r/L, s
-}
-
-// func AceptacionPorUmbrales(t float64, sol*Ciudades) []int{
-func (c *Ciudades) AceptacionPorUmbrales(t float64, sol *Solucion) []int{
-	fmt.Println("ACEPTACION POR UMBRALES")
-	s := c.Id
-	p := 0.0
-	for t > EPSILON {
-		fmt.Println(t)
-		fmt.Println(EPSILONP)
-		q := math.MaxFloat64
-		fmt.Println("Antes del p<q")
-		for p < q {
-			fmt.Println("en el p<q")
-			q = p
-			p, s = calculaLote(t, c, sol)
-			
-		}
-		t = PHI*t
-	}
-	return s
-}
-
 func porcentajeAceptados(ciu *Ciudades, t float64, sol *Solucion) float64 {
+	// CUANTO VALE N (?)
 	c := 0
 	norm := sol.normalizador
-	for i := 0; i < len(ciu.Id); i++ {
-		sp := vecino(sol.actual)
-		fsP := FunCostoSolucion(sp, ciu.Distancias, ciu.AristasE)
-		sol.nueva = sp
-		sol.nuevaC = fsP
-		if fsP/norm <= sol.actualC/norm + t {
+	s := CopiarCiudades(sol.actual)
+	fs := FunCostoSolucion(s, ciu.Distancias, ciu.AristasE)/norm
+	// for i := 0; i < len(ciu.Id); i++ {
+	for i := 0; i < 1000; i++ {
+		sp := vecino(s)
+		fsP := FunCostoSolucion(sp, ciu.Distancias, ciu.AristasE)/norm
+		if fsP <= fs + t {
 			c++
-			sol.actual = sol.nueva
-			sol.actualC = sol.nuevaC
-			if sol.nuevaC < sol.mejorC {
-				sol.mejor = sol.nueva
-				sol.mejorC = sol.nuevaC
-			}
+			s = sp // s <- s'
+			fs = fsP
 		}
-		sol.PrintData()
 	}
-	return float64(c)/float64(len(ciu.Id))
+	fmt.Printf("P:A: %2.15f\n", float64(c)/float64(1000))
+	return float64(c)/float64(1000)
 }
 
 func busquedaBinaria(s *Ciudades, t1, t2 float64, sol *Solucion) float64{
+	fmt.Printf("T1, T2: %2.15f\t%2.15f\n", t1, t2)
 	tm := (t1+t2)/2
+	fmt.Printf("TM: %2.15f\n", tm)
 	if t2 - t1 < EPSILONP {
 		return tm
 	}
@@ -233,13 +174,16 @@ func busquedaBinaria(s *Ciudades, t1, t2 float64, sol *Solucion) float64{
 
 // func temperaturaInicial(s*Ciudades, t float64) float64 {
 func (s *Ciudades) TemperaturaInicial(t float64, sol *Solucion) float64 {
-	fmt.Println("TEMPERATURA INICIAL")
 	p := porcentajeAceptados(s, t, sol)
+	fmt.Printf("P-TI: %2.15f\n", p)
+	fmt.Printf("t-TI: %2.15f\n", t)
 	var t1, t2 float64
 	if math.Abs(P - p) <= EPSILONP {
+		fmt.Printf("YESSSSS------P-p", math.Abs(P-p))
 		return t
 	}
 	if p < P {
+		fmt.Println("THEEEEEEN")
 		for p < P {
 			t = 2*t
 			p  = porcentajeAceptados(s, t, sol)
@@ -247,13 +191,19 @@ func (s *Ciudades) TemperaturaInicial(t float64, sol *Solucion) float64 {
 		t1 = t/2
 		t2 = t
 	} else {
+		fmt.Println("ELSEEEEEE")
 		for p > P {
+			// fmt.Printf("PPPPPPP-TI: %2.15f\n", P)
+			fmt.Printf("p11111-TI: %2.15f\n", p)
 			t = t/2
 			p = porcentajeAceptados(s, t, sol)
+			fmt.Printf("p22222-TI: %2.15f\n", p)
 		}
 		t1 = t
 		t2 = 2*t
 	}
+	nT := busquedaBinaria(s, t1, t2, sol)
+	fmt.Printf("TEMPERATURA INICIAL: %f\n", nT)
 	return busquedaBinaria(s, t1, t2, sol)
 }
 
