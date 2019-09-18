@@ -14,7 +14,7 @@ const CIUDADES = "ciudades"
 // Leemos el archivo
 // Regresa las ciudades en un slice
 // Regresa el nombre "ciudadesXX" 
-func Leer(path string) ([]int, string){
+func Leer(path, seed string) ([]int, string, int){
 	archivo, err := os.Open(path)
 
 	if (err != nil) {
@@ -36,5 +36,8 @@ func Leer(path string) ([]int, string){
 		s, _ := strconv.Atoi(ciudades[i])
 		id = append(id, s)
 	}
-	return id, CIUDADES+strconv.Itoa(num)
+
+	// Semilla en int
+	newSeed, _ := strconv.Atoi(seed)
+	return id, CIUDADES+strconv.Itoa(num), newSeed
 }
