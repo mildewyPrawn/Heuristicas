@@ -29,15 +29,16 @@ func main() {
 
 	
 	
-	tInit := c.TemperaturaInicial(10, s)
+	tInit := c.TemperaturaInicial(8, s)
+	// fmt.Println(tInit)
+	
+	
+	// res := c.AceptacionPorUmbrales(tInit, s)
+	// fmt.Println(res)
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
 	fmt.Println(tInit)
-	
-	
-	res := c.AceptacionPorUmbrales(tInit, s)
-	fmt.Println(res)
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
 	// s.PrintData(c)
 	// fmt.Printf("\n%2.15f\n",s.nuevaC)
 	
