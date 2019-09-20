@@ -13,7 +13,7 @@ func Test40(t *testing.T) {
 	funC := 4526237.801017570309341
 	canekMaxDist := 4970123.959999999962747
 	canekNormalizador := 182907823.060000002384186
-	canekFuncionCosto := 4526237.801017570309341;
+	canekFuncionCosto := 4526237.801017570309341
 	if norm - canekMaxDist != 0 {
 		fmt.Println("Máxima distancia no coincide40")
 		fmt.Println(maxD-canekMaxDist)

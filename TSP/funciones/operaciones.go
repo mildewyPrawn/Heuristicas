@@ -12,9 +12,9 @@ const (
 	// medidas que son las que debería ir ajustando
 	L = 100
 	PHI = .75
-	EPSILON = .01
-	EPSILONP = .01
-	P = .90	
+	EPSILON = .0001
+	EPSILONP = .0001
+	P = .95
 )
 
 
