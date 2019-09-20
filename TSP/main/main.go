@@ -30,12 +30,15 @@ func main() {
 	
 	
 	tInit := c.TemperaturaInicial(8, s)
-	// fmt.Println(tInit)
+	fmt.Printf("TF: %2.15f", tInit)
 	
-	
-	// res := c.AceptacionPorUmbrales(tInit, s)
-	// fmt.Println(res)
+
 	fmt.Println()
+	fmt.Println()
+	fmt.Println()	
+	res := c.AceptacionPorUmbrales(tInit, s)
+	s.PrintData()
+	fmt.Println(res)
 	fmt.Println()
 	fmt.Println()
 	fmt.Println(tInit)
