@@ -1,0 +1,204 @@
+\documentclass[
+10pt,
+a4paper,
+oneside,
+headinclude,footinclude,
+BCOR5mm,
+]{article}
+
+\input{structure.tex} % Include the structure.tex file which specified the document structure and layout
+
+\hyphenation{Fortran hy-phen-ation} % Specify custom hyphenation points in words with dashes where you would like hyphenation to occur, or alternatively, don't put any dashes in a word to stop hyphenation altogether
+
+\begin{document}
+
+\begin{titlepage}
+  \centering
+  {\scshape\LARGE Universidad Nacional Autónoma de México \par}
+      \vspace{1cm}
+	     {\scshape\Large Facultad de Ciencias\par}
+	     \vspace{1.2cm}
+             \begin{center}
+	       \includegraphics[scale=.2]{../imagenes/UNAM.eps}
+	     \end{center}
+	     \vspace{.5 cm}
+
+	     {\huge\bfseries Proyecto 1: \par}
+	     {\huge\bfseries Travelling Salesman Problem \par}
+	     \vspace{0.5cm}
+
+	     {\Large\itshape Emiliano Galeana Araujo\\314032324\par}
+	     \vfill
+	     \vspace{0.5cm}
+
+             Seminario de Ciencias de la computación B\par
+             Heuríticas de Optimización Combinatoria\par\par
+	     \textsc{Dr. Canek Peláez Valdés}\\
+             \textsc{L. en C.C. Víctor Zamora Gutiérrez}\\
+	     \vspace{0.1cm}
+	            {\large \today \par}
+\end{titlepage}
+
+
+%----------------------------------------------------------------------------------------
+%	HEADERS
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\sectionmark}[1]{\markright{\spacedlowsmallcaps{#1}}} % The header for all pages (oneside) or for even pages (twoside)
+%\renewcommand{\subsectionmark}[1]{\markright{\thesubsection~#1}} % Uncomment when using the twoside option - this modifies the header on odd pages
+\lehead{\mbox{\llap{\small\thepage\kern1em\color{halfgray} \vline}\color{halfgray}\hspace{0.5em}\rightmark\hfil}} % The header style
+
+\pagestyle{scrheadings} % Enable the headers specified in this block
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS & LISTS OF FIGURES AND TABLES
+%----------------------------------------------------------------------------------------
+
+\setcounter{tocdepth}{2} % Set the depth of the table of contents to show sections and subsections only
+
+\tableofcontents
+
+\listoffigures
+
+\section*{Abstract}
+
+Se conocen muchos problemas de optimización. El objetivo de este proyecto es el
+\TSP (TSP) pero con la particularidad de que no se busca un ciclo, sino un camino
+que pase por \textit{n} ciudades sin repetir ninguna.\\
+Dada una base de datos con ciudades, distancias entre ellas y conexiones entre
+ciudades. ¿Cuál es el mínimo costo que podemos encontrar para ejemplares de 40 y
+150 ciudades? Se emplea la heurística de recocido simulado, la cual sirve para
+resolver problemas de optimización. Los resultados arrojadas por la heurística se
+cree son los óptimos, sin embargo no se pueden demostrar.
+
+\newpage
+
+
+\section{Introduction}
+
+A statement requiring citation \cite{Figueredo:2009dg}.
+
+\section{Lenguaje}
+
+Para la implementación de la heurística se eligió como lenguaje
+\texttt{Go(Golang)} el cual \textit{es un lenguaje open source que hace más
+  sencillo construir software de manera simple, confiable y eficiente.
+  \cite{Golang01}} Lo elegí básicamente porque había escuchado que era bueno y
+no era muy complicado de usar y porque nunca había hecho algo en \GO. La
+curva de aprendizaje fue complicada, pues empecé con algunas funciones en una
+carpeta hecha para el curso, en donde tenía al \textit{main} ahí mismo. Al
+momento de pasar al main a otro archivo comenzaron los problemas y después de
+buscar en internet descubrí que tenía que migrar mis archivos a la carpeta que
+\GO crea en el \textit{home}.\\
+Honestamente creí que lo más complicado sería poder conectar mi programa a la
+base de datos, pero fue muy fácil, hay muchos tutoriales en internet sobre
+\GO que me ayudaron con eso y con otras cosas del lenguaje como las firmas de las
+funciones y lo mejor de todo, que me sirvió para algunas funciones de este
+proyecto. Que puedes tener funciones que regresan más de un tipo.\\
+Los contras es que no podía copiar un array tan sencillo, que aún después de
+crear un array, podía seguir insertando, que fue complicada la diferencia entre
+\texttt{a = b} y \texttt{a := b}. Y obviamente el hecho de tener que estar en la
+carpeta generada en el \textit{home}.
+Los pros fueron los tipos de regreso, que cuando importabas una biblioteca si no
+la usabas no te dejaba compilar el programa, igual que cuando creabas una
+variable y esta no era usada no te dejaba compilar, y que una vez que más o menos
+le agarras la onda ya no es tan complicado hacer cosas sencillas en el lenguaje.
+
+\section{Packages}
+
+\begin{enumerate}[noitemsep]
+\item main
+\item funciones
+\item argumentos
+\end{enumerate}
+
+\subsection{Main}
+
+En este ``package'' lo que se implementó es la función main, y se importan los
+``package'' \textit{``fmt'', ``os'', ``math/rand'', ``funciones'', ``argumentos''
+}.
+
+\paragraph{Función main} Es la función principal, se encarga de verificar la
+entrada esto quiere decir, que se le pasen los argumentos correspondientes.
+También se crea un ``struct'' Ciudades y Solucion que son llamados de
+``funciones''.
+
+\subsection{Argumentos}
+En este ``package'' se encuentra el archivo ``leer\_ciudades.go''.
+\paragraph{Función Leer} Es la función que recibe los argumentos pasados por el
+main. Una seed y un archivo con las ciudades que se buscan para el camino, este
+archivo tiene que ser de una línea y con los índices de las ciudades separados
+por coma (,). Los índices de las ciudades se pueden encontrar en la base de
+datos. La función regresa un \texttt{[]int} con los índices
+de las ciudades, regresa la semilla que es el segundo argumento en tipo
+\texttt{int}, y el nombre del archivo que se leyó, esto con la finalidad de
+escribir un archivo con los datos obtenidos y se tenga conocimiento de a qué
+resultados hacen referencia.
+
+\subsection{Funciones}
+En este ``package'' se encuentran los archivos ``funciones.go'',
+``operaciones.go'' y ``sql.go'', así como sus respectivos tests.
+
+\subsubsection{funciones.go}
+
+\paragraph{Función PrintCiudad}
+\paragraph{Función PrintData}
+\paragraph{Función totalAristas}
+\paragraph{Función GetNormalizador}
+\paragraph{Función FunCosto}
+\paragraph{Función FunCostoSolucion}
+\paragraph{Función porcentajeAceptados}
+\paragraph{Función busquedaBinaria}
+\paragraph{Función TemperaturaInicial}
+\paragraph{Función calculaLote}
+\paragraph{Función AceptacionPorUmbrales}
+\paragraph{Función printSol}
+\paragraph{Función NewSolucion}
+\paragraph{Función NewCiudades}
+
+
+\subsubsection{operaciones.go}
+En este archivo se implementan todas las funciones que no tienen que ver tanto
+con la heurística o que como su nombre lo indica, son operaciones básicas.
+
+\paragraph{Función radianes} Cambia una coordenada (\texttt{float64}) en su
+representación en radianes (\texttt{float64}).
+\paragraph{Función distanciaNatural} Calcula la distancia en la vida real entre
+dos índices de, ciudades, no es la distancia exacta. Hace uso del archivo
+``sql.go''.
+\paragraph{Función obtenerA} Regresa el resultado de la siguiente fórmula:
+\begin{equation}
+  A = \sin(\frac{lat(v)- lat(u)}{2})^{2} + \cos(lat(u)) \times \cos(lat(v)) \times
+  \sin(\frac{lon(v) - lon(u)}{2})^{2}
+\label{eq:refname2}
+\end{equation}
+
+\paragraph{Función pesoAumentado} Dados dos índices de ciudades y la máxima distancia,
+regresa la distancia entre las dos ciduades multiplicada por la máxima distancia.
+\paragraph{Función CopiarCiudades} Copia un \texttt{[]int} y regresa la copia.
+\paragraph{Función swap} Dados dos índices, y un \texttt{[]int}, cambia los índices en
+una copia del \texttt{[]int}.
+\paragraph{Función vecino} Dado un \texttt{[]int}, que representa el acomodo de los
+índices de las ciudades, regresa un vecino de esta representación, eso es, el
+intercambio de dos índices aleatorios.
+
+
+\subsubsection{sql.go}
+En este archivo se hace la conexión con la base de datos, así como los queries
+necesarios durante la implementación de la heurística.
+
+\paragraph{obtenerLatLon} Es la función encargada de regresar una tupla de
+\texttt{float64} la tupla representa a la latitud y longitud de las ciudades en
+el mundo.
+
+\paragraph{completa} Esta función recibe un \texttt{[]int} el cual contiene a los
+índices de las ciudades y regresa un \texttt{[][]float64} el cual representa a
+todas las conexiones que se quieren para una instancia de nuestro problema.
+
+\section{Resultados}
+
+
+\bibliography{mybib}{}
+\bibliographystyle{plain}
+
+\end{document}
