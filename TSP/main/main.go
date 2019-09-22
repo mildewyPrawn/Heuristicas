@@ -16,14 +16,23 @@ func main() {
 	}
 	nombre := os.Args[1] // Nombre archivo con ciudades
 	ciudades, saludo, seed := arg.Leer(nombre, os.Args[2]) // ciudades y nombre limpio
+	fmt.Println(seed)
 	rand.Seed(int64(seed))
 	fmt.Println(saludo)
-	
+
+	// i := 0
+	// for i < 20 {
+		// k := i*10
+		// rand.Seed(int64(k))
+		// fmt.Printf("SEEED: %d", k)
+	rand.Shuffle(len(ciudades), func(i, j int) {ciudades[i], ciudades[j] = ciudades[j], ciudades[i]})
+
+
 	c := city.NewCiudades(ciudades)	
 	c.FunCosto() //Esta así y no desde el "constructor" para poder seguirla calculando
 	c.PrintCiudad()
-	
 
+	
 	s := city.NewSolucion(c.AristasE, c.Id, c.Distancias)
 
 
@@ -42,6 +51,8 @@ func main() {
 	fmt.Println()
 	fmt.Println()
 	fmt.Println(tInit)
+	// i++;
+	// }
 	// s.PrintData(c)
 	// fmt.Printf("\n%2.15f\n",s.nuevaC)
 	

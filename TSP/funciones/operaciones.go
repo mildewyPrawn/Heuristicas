@@ -10,11 +10,20 @@ const (
 	// Constante del radio de la tierra aproximado
 	radio = 6373000
 	// medidas que son las que debería ir ajustando
-	L = 100
-	PHI = .75
+	L = 1000
+	// L = 500
+	PHI = .9
 	EPSILON = .0001
 	EPSILONP = .0001
-	P = .95
+	P = .90
+	// 525669.094937816378661 L = 1000; L*10 T = 21387....
+	// 506144.423279115348123 L = 1000; L*L T = 9202....
+	// 535995.873955731629394 L = 100; L*L T = 7454...
+	// 521889.019054602307733 L = 1000; L*L T = 10032... SEED = 127
+	// 493138.574513699917588 L = 1000; L*L T = 8695... SEED = 1193
+	// 342184.580924343201332 L = 500; L*L T = 6636... SEED = 1195
+	// 315208.333823074062821 L = 1000; L*L T = 9103... SEED = 1195
+	// 335569.438928690564353                           S = 4
 )
 
 
@@ -73,7 +82,8 @@ func swap(i, j int, ciudades []int) []int {
 // Obtiene un vecino en la gráfica
 // Recibe un arreglo de ciudades
 // Regresa un vecino en la grafica de actual
-func vecino(actual []int) []int {
+func vecino(actual []int) ([]int, int, int) {
+// func vecino(actual []int) []int {
 	i := rand.Intn(len(actual))
 	j := rand.Intn(len(actual))
 	// fmt.Printf("I: %d\tJ: %d", i, j)
@@ -81,5 +91,5 @@ func vecino(actual []int) []int {
 		i = rand.Intn(len(actual))
 	}
 	nuevo := swap(i,j, actual)
-	return nuevo
+	return nuevo, i, j
 }

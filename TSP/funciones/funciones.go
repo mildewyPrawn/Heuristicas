@@ -22,8 +22,8 @@ type Solucion struct {
 	mejorC float64
 	actual []int
 	actualC float64
-	nueva []int
-	nuevaC float64
+	// nueva []int
+	// nuevaC float64
 }
 
 // Solo imprime una ciudad con sus datos
@@ -41,14 +41,14 @@ func (s *Solucion) PrintData() {
 	fmt.Printf("\t%2.15f\n\n", s.normalizador)
 	fmt.Println("MEJOR:")
 	fmt.Println(s.mejor)
-	fmt.Printf("\tcosto: %2.15f\n\n", s.mejorC/s.normalizador)
+	fmt.Printf("\tcosto: %2.15f\n\n", s.mejorC)
 	fmt.Print()
 	fmt.Println("ACTUAL:")
 	fmt.Println(s.actual)
-	fmt.Printf("\tcosto: %2.15f\n\n", s.actualC/s.normalizador)
+	fmt.Printf("\tcosto: %2.15f\n\n", s.actualC)
 	fmt.Println("NUEVA:")
-	fmt.Println(s.nueva)
-	fmt.Printf("\tcosto: %2.15f\n\n", s.nuevaC/s.normalizador)
+	// fmt.Println(s.nueva)
+	// fmt.Printf("\tcosto: %2.15f\n\n", s.nuevaC/s.normalizador)
 	// fmt.Printf("\tcosto: %2.15f", FunCostoSolucion(s.nueva, c.Distancias, c.AristasE)/s.normalizador)
 	
 }
@@ -108,7 +108,7 @@ func (c *Ciudades) FunCosto() {
 }
 
 func FunCostoSolucion(id []int, distancias [][]float64,
-	aristas []float64) float64 {
+	aristas []float64, norm float64) float64 {
 	suma := 0.0
 	for i := 1; i < len(id); i++ {
 		if (distancias[i][i-1] == 0 && distancias[i-1][i] == 0) {
@@ -119,39 +119,36 @@ func FunCostoSolucion(id []int, distancias [][]float64,
 			suma += distancias[i][i-1] + distancias[i-1][i]
 		}
 	}
-	return suma
+	return suma/norm
 }
 
 func porcentajeAceptados(ciu *Ciudades, t float64, sol *Solucion) float64 {
 	c := 0
-	norm := sol.normalizador
-	s := CopiarCiudades(sol.actual)
-	fs := FunCostoSolucion(s, ciu.Distancias, ciu.AristasE)
+	// fs := FunCostoSolucion(s, ciu.Distancias, ciu.AristasE)
 	for i := 0; i < 1000; i++ {
-		sp := vecino(s)
-		fsP := FunCostoSolucion(sp, ciu.Distancias, ciu.AristasE)
-		if fsP/norm <= fs/norm + t {
+		sp, _, _ := vecino(sol.actual)
+		// sp, _, _ := vecino(sol.mejor)
+		fsP := FunCostoSolucion(sp, ciu.Distancias, ciu.AristasE,
+			sol.normalizador)
+		if fsP <= sol.actualC + t {
 			c++
-			sol.actual = sp
+			sol.actual = sp // s <- s'
 			sol.actualC = fsP
-			s = sp // s <- s'
-			fs = fsP
 		}
 	}
 	return float64(c)/float64(1000)
 }
 
 func busquedaBinaria(s *Ciudades, t1, t2 float64, sol *Solucion) float64{
-	// fmt.Printf("TEMPERATURA INICIAL: %f\n", t)
-	fmt.Printf("T1, T2: %2.15f\t%2.15f\n", t1, t2)
+	// fmt.Printf("T1, T2: %2.15f\t%2.15f\n", t1, t2)
 	tm := (t1+t2)/2
-	fmt.Printf("TM: %2.15f\n", tm)
+	// fmt.Printf("TM: %2.15f\n", tm)
 	if t2 - t1 < EPSILONP {
 		return tm
 	}
 	p := porcentajeAceptados(s, tm, sol)
-	fmt.Printf("P:A: %2.15f\n", p)
-	if math.Abs(P - p) < EPSILONP {
+	// fmt.Printf("P:A: %2.15f\n", p)
+	if math.Abs(P - p) < EPSILON { // P
 		return tm
 	}
 	if p > P {
@@ -161,7 +158,6 @@ func busquedaBinaria(s *Ciudades, t1, t2 float64, sol *Solucion) float64{
 	}
 }
 
-// func temperaturaInicial(s*Ciudades, t float64) float64 {
 func (s *Ciudades) TemperaturaInicial(t float64, sol *Solucion) float64 {
 	p := porcentajeAceptados(s, t, sol)
 	var t1, t2 float64
@@ -177,16 +173,12 @@ func (s *Ciudades) TemperaturaInicial(t float64, sol *Solucion) float64 {
 		t2 = t
 	} else {
 		for p > P {
-			// fmt.Printf("PPPPPPP-TI: %2.15f\n", P)
-			// fmt.Printf("p11111-TI: %2.15f\n", p)
 			t = t/2
 			p = porcentajeAceptados(s, t, sol)
-			// fmt.Printf("p22222-TI: %2.15f\n", p)
 		}
 		t1 = t
 		t2 = 2*t
 	}
-	// nT := busquedaBinaria(s, t1, t2, sol)
 	return busquedaBinaria(s, t1, t2, sol)
 }
 
@@ -195,33 +187,35 @@ func (s *Ciudades) TemperaturaInicial(t float64, sol *Solucion) float64 {
 
 // func calculaLote(t float64, ciudades *) (float64, []int) {
 func calculaLote(t float64, ciu *Ciudades, sol *Solucion) (float64, []int) {
-	dist := ciu.Distancias
-	norm := sol.normalizador
 	c := 0
 	i := 0
 	r := 0.0
-	s := CopiarCiudades(sol.actual)
-	fs := FunCostoSolucion(s, ciu.Distancias, ciu.AristasE)
-	for c < L && i < L*10 {
-		sP := vecino(s)
-		fsP := FunCostoSolucion(sP, dist, ciu.AristasE)
-		if fsP/norm <= fs/norm + t {
-			sol.actual = sP
+	// s := CopiarCiudades(sol.actual)
+	// fs := FunCostoSolucion(s, ciu.Distancias, ciu.AristasE)
+	for c < L && i < L*L {
+		sP, a, b := vecino(sol.actual)
+		// fmt.Println(i)
+		fsP := FunCostoSolucion(sP, ciu.Distancias, ciu.AristasE,
+			sol.normalizador)
+		if fsP <= sol.actualC + t {
+			sol.actual = sP // s <- s'
 			sol.actualC = fsP
+			// fmt.Printf("\n\t(%d,%d) .... randoms\t\n",a, b)
 			if fsP < sol.mejorC {
+				// fmt.Println(i)				
 				sol.mejor = sP
 				sol.mejorC = fsP
+				printSol(sol.mejorC, sol.mejor)
+				fmt.Printf("\n\t(%d,%d) .... randoms\t\n",a, b)
 			}
-			s = sP
-			fs = fsP
-			// fmt.Println(sol.actual)
 			c++
 			r = r + fsP
+			// fmt.Printf("R: %2.15f\n", r)
 		}
 		i++;
 	}
 	// fmt.Println(s)
-	return r/L, s
+	return r/L, sol.actual
 }
 
 // func AceptacionPorUmbrales(t float64, sol*Ciudades) []int{
@@ -235,7 +229,11 @@ func (c *Ciudades) AceptacionPorUmbrales(t float64, sol *Solucion) []int{
 		for p < q {
 			q = p
 			p, s = calculaLote(t, c, sol)
-			fmt.Println(s)
+			fmt.Println("\n\n------------------------------------UP")
+			fmt.Printf("\nP: %2.15f\nQ: %2.15f\n",p, q)
+			fmt.Println("------------------------------------DW\n\n")
+			// fmt.Printf("P: %2.15f\n", p)
+			// fmt.Println(s)
 		}
 		t = PHI*t
 	}
@@ -270,7 +268,7 @@ func (c *Ciudades) GetNormalizador() float64 {
 
 func NewSolucion(aristas []float64, id []int, dist [][]float64) *Solucion {
 	norm := GetNormalizador(aristas, id)
-	costo := FunCostoSolucion(id, dist, aristas)
+	costo := FunCostoSolucion(id, dist, aristas, norm)
 	return &Solucion{
 		// temperatura: 0.0,
 		normalizador: norm,
@@ -278,8 +276,6 @@ func NewSolucion(aristas []float64, id []int, dist [][]float64) *Solucion {
 		mejorC: costo,
 		actual: id,
 		actualC: costo,
-		nueva: id,
-		nuevaC: costo,
 	}
 }
 
@@ -294,16 +290,3 @@ func NewCiudades(ciudadesId []int) *Ciudades {
 		Normalizador: norma,
 	}
 }
-
-/*
-func NewCiudades(ciudadesId []int) Ciudadeser {
-	dista := completa(ciudadesId)
-	arist := totalAristas(ciudadesId, dista)
-	norma := GetNormalizador(arist, ciudadesId)
-	return &Ciudades{
-		Id: ciudadesId,
-		Distancias: dista,
-		AristasE: arist,
-		Normalizador: norma,
-	}
-}*/
