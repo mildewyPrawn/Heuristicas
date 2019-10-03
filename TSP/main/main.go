@@ -21,7 +21,7 @@ func main() {
 	fmt.Println(saludo)
 
 	rand.Shuffle(len(ciudades), func(i, j int) {ciudades[i], ciudades[j] = ciudades[j], ciudades[i]})
-
+	
 	
 	g := city.NewGeneral(ciudades)
 	// g.PrintGenData()
@@ -31,14 +31,14 @@ func main() {
 
 
 	tInit := city.TemperaturaInicial(8, s, g)
-	fmt.Printf("TF: %2.15f", tInit)
-	
+	// fmt.Printf("TF: %2.15f", tInit)
+	// s.PrintData()
 
 	fmt.Println()
 	fmt.Println()
 	fmt.Println()	
 	res := city.AceptacionPorUmbrales(tInit, s, g)
-	s.PrintData()
+	// s.PrintData()
 	fmt.Println(res)
 	fmt.Println()
 	fmt.Println()

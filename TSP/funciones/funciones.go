@@ -7,6 +7,11 @@ import (
 	"fmt"
 )
 
+type miniSol struct {
+	s []int
+	fs float64
+}
+
 type General struct {
 	Init []int
 	Distancias [][]float64 // Grafica completa
@@ -14,13 +19,10 @@ type General struct {
 }
 
 type Solucion struct {
-	normalizador float64 // Normalizador usado 
-	mejor []int
-	mejorC float64
-	actual []int
-	actualC float64
-	init []int
-	initC float64
+	normalizador float64 // Normalizador usado
+	init miniSol
+	best miniSol
+	newS miniSol
 	i,j int
 }
 
@@ -36,16 +38,16 @@ func (g *General) PrintGenData() {
 
 // func (s *Solucion) PrintData(c *Ciudades) {
 func (s *Solucion) PrintData() {
-	fmt.Print("NORMALIZADOR:")
-	fmt.Printf("\t%2.15f\n\n", s.normalizador)
-	fmt.Println("MEJOR:")
-	fmt.Println(s.mejor)
-	fmt.Printf("\tcosto: %2.15f\n\n", s.mejorC)
-	fmt.Print()
-	fmt.Println("ACTUAL:")
-	fmt.Println(s.actual)
-	fmt.Printf("\tcosto: %2.15f\n\n", s.actualC)
-	fmt.Println("NUEVA:")
+	fmt.Printf("NORMALIZADOR: %2.15f\n", s.normalizador)
+	fmt.Printf("INIT\n")
+	fmt.Printf("C: %2.15f\n", s.init.fs)
+	fmt.Println(s.init.s)
+	fmt.Printf("BEST\n")
+	fmt.Printf("C: %2.15f\n", s.best.fs)
+	fmt.Println(s.best.s)
+	fmt.Printf("NEWS\n")
+	fmt.Printf("C: %2.15f\n", s.newS.fs)
+	fmt.Println(s.newS.s)
 }
 
 // Para cada par no ordenado, si la arista está en las distancias (tsp.sql), la
@@ -102,30 +104,29 @@ func FunCostoSolucion(id []int, norm float64, g *General) float64 {
 
 func porcentajeAceptados(g *General, t float64, sol *Solucion) float64 {
 	c := 0
-	// fs := FunCostoSolucion(s, ciu.Distancias, ciu.AristasE)
+	s := sol.init.s
+	fs := sol.init.fs
 	for i := 0; i < 1000; i++ {
-		sp, _, _ := vecino(sol.actual)
-		// sp, _, _ := vecino(sol.mejor)
+		sp, _, _ := vecino(s)
 		fsP := FunCostoSolucion(sp, sol.normalizador, g)
-		if fsP <= sol.actualC + t {
+		if fsP <= fs + t {
 			c++
-			sol.actual = sp // s <- s'
-			sol.actualC = fsP
-		}
+			// s <- s'
+			s = CopiarCiudades(sp)
+			fs = fsP
+		} // No es mejor, pero no importa, porque la volvemos a calcular
 	}
 	return float64(c)/float64(1000)
 }
 
 func busquedaBinaria(g *General, t1, t2 float64, sol *Solucion) float64{
-	// fmt.Printf("T1, T2: %2.15f\t%2.15f\n", t1, t2)
-	tm := (t1+t2)/2
-	// fmt.Printf("TM: %2.15f\n", tm)
+	fmt.Println("EMPIEZA BS")
+	tm := (t1+t2)/2.0
 	if t2 - t1 < EPSILONP {
 		return tm
 	}
 	p := porcentajeAceptados(g, tm, sol)
-	// fmt.Printf("P:A: %2.15f\n", p)
-	if math.Abs(P - p) < EPSILON { // P
+	if math.Abs(P - p) < EPSILONP {
 		return tm
 	}
 	if p > P {
@@ -136,6 +137,7 @@ func busquedaBinaria(g *General, t1, t2 float64, sol *Solucion) float64{
 }
 
 func TemperaturaInicial(t float64, sol *Solucion, g *General) float64 {
+	fmt.Println("Empieza temp")
 	p := porcentajeAceptados(g, t, sol)
 	var t1, t2 float64
 	if math.Abs(P - p) <= EPSILONP {
@@ -156,33 +158,31 @@ func TemperaturaInicial(t float64, sol *Solucion, g *General) float64 {
 		t1 = t
 		t2 = 2*t
 	}
-	return busquedaBinaria(g, t1, t2, sol)
+	return busquedaBinaria(g, t1, t2, sol) // COMO 13 segundos en calcular TI
 }
 
-
-
-
-// func calculaLote(t float64, ciudades *) (float64, []int) {
 func calculaLote(t float64, sol *Solucion, g *General) (float64, []int) {
 	c := 0
 	i := 0
 	r := 0.0
-	// s := CopiarCiudades(sol.actual)
-	// fs := FunCostoSolucion(s, ciu.Distancias, ciu.AristasE)
+	s := sol.newS.s
+	fs := sol.newS.fs
 	for c < L && i < L*L {
-		sP, a, b := vecino(sol.actual)
+		sP, _, _ := vecino(s)
 		// fmt.Println(i)
 		fsP := FunCostoSolucion(sP, sol.normalizador, g)
-		if fsP <= sol.actualC + t {
-			sol.actual = sP // s <- s'
-			sol.actualC = fsP
+		if fsP <= fs + t {
+			// s <- s'
+			s = CopiarCiudades(sP)
+			fs = fsP
+			// printSol(fs, s)
 			// fmt.Printf("\n\t(%d,%d) .... randoms\t\n",a, b)
-			if fsP < sol.mejorC {
-				// fmt.Println(i)				
-				sol.mejor = sP
-				sol.mejorC = fsP
-				printSol(sol.mejorC, sol.mejor)
-				fmt.Printf("\n\t(%d,%d) .... randoms\t\n",a, b)
+			if fsP < sol.best.fs {
+				printSol(fs, s)
+				sol.best.s = CopiarCiudades(sP)
+				sol.best.fs = fsP
+				// printSol(sol.mejorC, sol.mejor)
+				// fmt.Printf("\n\t(%d,%d) .... randoms\t\n",a, b)
 			}
 			c++
 			r = r + fsP
@@ -191,31 +191,24 @@ func calculaLote(t float64, sol *Solucion, g *General) (float64, []int) {
 		i++;
 	}
 	// fmt.Println(s)
-	return r/L, sol.actual
+	return r/L, s
 }
 
-// func AceptacionPorUmbrales(t float64, sol*Ciudades) []int{
 func AceptacionPorUmbrales(t float64, sol *Solucion, g *General) []int{
 	// fmt.Println("ACEPTACION POR UMBRALES")
-	s := g.Init
+	s := sol.init.s
 	p := 0.0
 	for t > EPSILON {
-		fmt.Println(t)
+		// fmt.Println(t)
 		q := math.MaxFloat64
 		for p < q {
 			q = p
 			p, s = calculaLote(t, sol, g)
-			fmt.Println("\n\n------------------------------------UP")
-			fmt.Printf("\nP: %2.15f\nQ: %2.15f\n",p, q)
-			fmt.Println("------------------------------------DW\n\n")
-			// fmt.Printf("P: %2.15f\n", p)
-			// fmt.Println(s)
 		}
 		t = PHI*t
 	}
 	return s
 }
-
 
 func printSol(p float64, s []int) {
 	fmt.Printf("Costo: %2.15f\t con ciudades:\n", p)
@@ -224,16 +217,23 @@ func printSol(p float64, s []int) {
 
 func NewSolucion(id []int, g *General) *Solucion {
 	norm := GetNormalizador(g.AristasE, id)
+	fmt.Println(g.AristasE)
 	costo := FunCostoSolucion(id, norm, g)
 	return &Solucion{
 		// temperatura: 0.0,
 		normalizador: norm,
-		mejor: CopiarCiudades(id),
-		mejorC: costo,
-		actual: CopiarCiudades(id),
-		actualC: costo,
-		init: CopiarCiudades(id),
-		initC: costo,
+		init: miniSol {
+			s: CopiarCiudades(id),
+				fs: costo,
+			},
+		best: miniSol {
+			s: CopiarCiudades(id),
+				fs: costo,
+			},
+		newS: miniSol {
+			s: CopiarCiudades(id),
+				fs: costo,
+			},
 	}
 }
 
@@ -241,6 +241,7 @@ func NewGeneral(ciudadesId []int) *General {
 	var newGeneral = new(General)
 	newGeneral.Distancias = completa(ciudadesId)
 	newGeneral.AristasE = totalAristas(ciudadesId, newGeneral)
+	// fmt.Println(newGeneral.AristasE)
 	newGeneral.Init = ciudadesId
 	return newGeneral
 }
