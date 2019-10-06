@@ -2,8 +2,7 @@ package funciones
 
 import (
 	"math"
-	"sort"
-	"fmt"
+	"math/rand"
 )
 
 //Estructura para las ciudades datos de tsp.sql

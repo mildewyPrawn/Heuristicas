@@ -2,7 +2,8 @@ package funciones
 
 import (
 	"math"
-	"math/rand"
+	"strconv"
+	"fmt"
 )
 
 const (
