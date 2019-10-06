@@ -18,7 +18,7 @@ const (
 )
 
 // Funcion que saca la gráfica completa de las ciudades
-func completa(cis []Ciudad, max float64) [][]float64 {
+func Completa(cis []Ciudad, max float64) [][]float64 {
 	var matriz = [][]float64{}
 	for i := 0; i < len(cis); i++ {
 		adyacentes := make([]float64, len(cis))
@@ -66,7 +66,7 @@ func copiarCiudades(cis []Ciudad) []Ciudad {
 }
 
 // Funcion que solo imprime los indices de la solucion
-func prettyPrint(cis []Ciudad) {
+func PrettyPrint(cis []Ciudad) {
 	s := ""
 	for i := 0; i < len(cis); i++ {
 		s += strconv.Itoa(cis[i].id) + " "

@@ -3,6 +3,7 @@ package funciones
 import (
 	"math"
 	"math/rand"
+	"fmt"
 )
 
 //Estructura para las ciudades datos de tsp.sql
@@ -39,8 +40,24 @@ type TSP struct {
 	datos General // datos. General struct
 }
 
+// Regresa la suma de las últimas k aristas
+// Recibe todas las aristas en E y todas las ciudades
+func GetNormalizador(aristasE []float64, ciudadesId []int) float64{
+	suma := 0.0
+	end := 0
+	if len(aristasE) < len(ciudadesId)-1 {
+		end = len(aristasE)
+	} else {
+		end = len(aristasE)-len(ciudadesId)
+	}
+	for i := len(aristasE)-1; i > end; i-- {
+		suma += aristasE[i]
+	}
+	return suma
+}
+
 // Funcion que calcula el costo de una solucion
-func funcionCosto(cis []Ciudad, g *General) float64 {
+func FuncionCosto(cis []Ciudad, g *General) float64 {
 	suma := 0.0
 	for i := 1; i < len(cis); i++ {
 		suma += g.completa[cis[i-1].pos][cis[i].pos]
@@ -68,10 +85,10 @@ func porcentajeAceptados(cis []Ciudad, t float64, g *General) float64{
 	c := 0.0
 	i := 1 
 	s := copiarCiudades(cis)
-	fs := funcionCosto(s, g)
+	fs := FuncionCosto(s, g)
 	for (i < 1000){
 		sP := vecino(s)
-		fsP := funcionCosto(sP, g)
+		fsP := FuncionCosto(sP, g)
 		if (fsP < fs + t){
 			c++
 			s = copiarCiudades(sP)
@@ -100,7 +117,7 @@ func busquedaBinaria(cis []Ciudad, t1, t2 float64, g *General) float64 {
 }
 
 // Funcion que calcula la temperatura inicial, dada la temperatura inicial de 8
-func temperaturaInicial(t float64, cis []Ciudad, g *General) float64 {	
+func TemperaturaInicial(t float64, cis []Ciudad, g *General) float64 {	
 	p := porcentajeAceptados(cis, t, g)
 	var t1, t2 float64
 	if math.Abs(P - p) <= EPSILONP {
@@ -135,7 +152,7 @@ func calculaLote(tsp *TSP) (float64, *TSP) {
 	fMejor:= tsp.best.eval
 	for c < L && i < L*L {
 		sP := vecino(s)
-		fsP := funcionCosto(sP, &tsp.datos)
+		fsP := FuncionCosto(sP, &tsp.datos)
 		if fsP < fs + tsp.temperatura {
 			s = copiarCiudades(sP)
 			fs = fsP
@@ -155,7 +172,7 @@ func calculaLote(tsp *TSP) (float64, *TSP) {
 }
 
 // Funcion que implementa aceptacion por umbrales
-func aceptacionPorUmbrales(tsp *TSP) ([]Ciudad, float64){
+func AceptacionPorUmbrales(tsp *TSP) ([]Ciudad, float64){
 	mejor := copiarCiudades(tsp.best.ciudades)
 	p := 0.0
 	for tsp.temperatura > EPSILON {
@@ -168,6 +185,28 @@ func aceptacionPorUmbrales(tsp *TSP) ([]Ciudad, float64){
 		}
 		tsp.temperatura = tsp.temperatura * PHI
 	}
-	fMejor := funcionCosto(mejor, &tsp.datos)
+	fMejor := FuncionCosto(mejor, &tsp.datos)
 	return mejor, fMejor
+}
+
+func NewTSP(ids []int) {
+	ciudades := ciudades(ids) // arreglo de todas las ciudades
+	aristasE := TotalAristas(ciudades) // las aristas de la gráfica
+	max := aristasE[len(aristasE)-1] // máxima distancia
+	fmt.Printf("MAX DIST:\t%2.15f\n",max) 
+	normalizador := GetNormalizador(aristasE, ids) // normalizador
+	fmt.Printf("NORM:\t%2.15f\n",normalizador)
+	completa := Completa(ciudades, max) // grafica completa de todas las aristas
+	gen := General{aristasE, normalizador, completa}
+	costo := FuncionCosto(ciudades, &gen) // funcion de costo
+	fmt.Printf("COSTO:\t%2.15f\n", costo)
+	ti := TemperaturaInicial(8, ciudades, &gen) // temperatura inicial, inicial
+	ini := Solucion{ciudades, costo, -1, -1} // solucion inicial
+	act := Solucion{ciudades, costo, -1, -1} // solucion actual
+	mej := Solucion{ciudades, costo, -1, -1} // solucion mejor
+	tsp := TSP{ini, act, mej, ti, gen}
+	fmt.Printf("TEMP INICIAL:\t%2.15f\n", tsp.temperatura)
+	mejorCiu, mejorCos := AceptacionPorUmbrales(&tsp) // mejor sol y su eval
+	fmt.Printf("EVAL MEJOR:\t%2.15f\n", mejorCos)
+	PrettyPrint(mejorCiu)
 }

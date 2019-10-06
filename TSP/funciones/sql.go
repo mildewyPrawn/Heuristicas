@@ -39,7 +39,7 @@ func ciudades(ids []int) []Ciudad {
 
 // Funcion que recibe un arreglo de ciudades y regresa las de forma ordenada las
 // aristas consecutivas existen en el arreglo 
-func totalAristas(cis []Ciudad) []float64 {
+func TotalAristas(cis []Ciudad) []float64 {
 	var aristas []float64
 	for i := 0; i < len(cis); i++ {
 		for j := 0; j < len(cis); j++ {
