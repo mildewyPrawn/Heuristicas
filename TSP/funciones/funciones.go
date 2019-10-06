@@ -137,12 +137,12 @@ func calculaLote(tsp *TSP) (float64, *TSP) {
 	for c < L && i < L*L {
 		sP := vecino(s)
 		fsP := funcionCosto(sP, &tsp.datos)
-		if (fsP < fs + tsp.temperatura){
+		if fsP < fs + tsp.temperatura {
 			s = copiarCiudades(sP)
 			fs = fsP
 			c++
 			r = r + fs
-			if (fs < fMejor){
+			if fs < fMejor {
 				mejor = copiarCiudades(s)
 				fMejor = fs
 			}
