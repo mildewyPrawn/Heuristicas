@@ -16,12 +16,12 @@ func  main() {
 		os.Exit(1)
 	}
 	nombre := os.Args[1] // nombre del archivo con ciudades
-	ciudades, _, seed := arg.Leer(nombre, os.Args[2]) // ciduades y seed
+	ciudades, _, _ := arg.Leer(nombre, os.Args[2]) // ciduades y seed
 	
 	for i := 0; i < 1001; i++ { // hacemos este ciclo para usar muchas ciudades
 		// basicamente nos vale el arguemnto 2, pero cuando ya tenga la
 		// mejor debería borrar el for
-		seed = i
+		seed := i
 		rand.Seed(int64(seed)) // setear la seed a todo el programa
 		fmt.Println()
 		fmt.Printf("SEED: %d\n", seed)
