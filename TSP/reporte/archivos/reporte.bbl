@@ -1,15 +1,19 @@
 \begin{thebibliography}{1}
 
-\bibitem{Figueredo:2009dg}
-A.~J. Figueredo and P.~S.~A. Wolf.
-\newblock Assortative pairing and life history strategy - a cross-cultural
-  study.
-\newblock {\em Human Nature}, 20:317--330, 2009.
-
 \bibitem{Golang01}
 Go.
 \newblock Go.
 \newblock \url{https://golang.org/}.
 \newblock Accesed: 2019-09-21.
+
+\bibitem{papadimitriou}
+Christos~H. Papadimitriou.
+\newblock {\em Computational Complexity}.
+\newblock Addison Wesle Longman, 1994.
+
+\bibitem{canek}
+C.~Peláez.
+\newblock Heurísticas de optimización combinatoria.
+\newblock pages 3--13.
 
 \end{thebibliography}

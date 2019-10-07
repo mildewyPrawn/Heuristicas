@@ -1,35 +1,31 @@
-\contentsline {section}{\numberline {1}{Introduction}}{2}{section.1}% 
+\contentsline {section}{\numberline {1}{Introducci\IeC {\'o}n}}{2}{section.1}% 
 \contentsline {section}{\numberline {2}{Lenguaje}}{2}{section.2}% 
 \contentsline {section}{\numberline {3}{Packages}}{2}{section.3}% 
 \contentsline {subsection}{\numberline {3.1}{Main}}{2}{subsection.3.1}% 
 \contentsline {paragraph}{{Funci\IeC {\'o}n main}}{2}{paragraph*.1}% 
-\contentsline {subsection}{\numberline {3.2}{Argumentos}}{2}{subsection.3.2}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n Leer}}{2}{paragraph*.2}% 
-\contentsline {subsection}{\numberline {3.3}{Funciones}}{2}{subsection.3.3}% 
+\contentsline {subsection}{\numberline {3.2}{Argumentos}}{3}{subsection.3.2}% 
+\contentsline {paragraph}{{Funci\IeC {\'o}n Leer}}{3}{paragraph*.2}% 
+\contentsline {subsection}{\numberline {3.3}{Funciones}}{3}{subsection.3.3}% 
 \contentsline {subsubsection}{\numberline {3.3.1}{funciones.go}}{3}{subsubsection.3.3.1}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n PrintCiudad}}{3}{paragraph*.3}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n PrintData}}{3}{paragraph*.4}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n totalAristas}}{3}{paragraph*.5}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n GetNormalizador}}{3}{paragraph*.6}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n FunCosto}}{3}{paragraph*.7}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n FunCostoSolucion}}{3}{paragraph*.8}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n porcentajeAceptados}}{3}{paragraph*.9}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n busquedaBinaria}}{3}{paragraph*.10}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n TemperaturaInicial}}{3}{paragraph*.11}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n calculaLote}}{3}{paragraph*.12}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n AceptacionPorUmbrales}}{3}{paragraph*.13}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n printSol}}{3}{paragraph*.14}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n NewSolucion}}{3}{paragraph*.15}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n NewCiudades}}{3}{paragraph*.16}% 
+\contentsline {paragraph}{{GetNormalizador}}{3}{paragraph*.3}% 
+\contentsline {paragraph}{{funcioncosto}}{3}{paragraph*.4}% 
+\contentsline {paragraph}{{vecino}}{3}{paragraph*.5}% 
+\contentsline {paragraph}{{porcentajeAceptados}}{3}{paragraph*.6}% 
+\contentsline {paragraph}{{busqueadBinaria}}{3}{paragraph*.7}% 
+\contentsline {paragraph}{{temperaturaInicial}}{3}{paragraph*.8}% 
+\contentsline {paragraph}{{calculaLote}}{3}{paragraph*.9}% 
+\contentsline {paragraph}{{aceptacionPorUmbrales}}{3}{paragraph*.10}% 
+\contentsline {paragraph}{{newTSP}}{3}{paragraph*.11}% 
 \contentsline {subsubsection}{\numberline {3.3.2}{operaciones.go}}{3}{subsubsection.3.3.2}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n radianes}}{3}{paragraph*.17}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n distanciaNatural}}{3}{paragraph*.18}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n obtenerA}}{3}{paragraph*.19}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n pesoAumentado}}{3}{paragraph*.20}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n CopiarCiudades}}{3}{paragraph*.21}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n swap}}{3}{paragraph*.22}% 
-\contentsline {paragraph}{{Funci\IeC {\'o}n vecino}}{3}{paragraph*.23}% 
-\contentsline {subsubsection}{\numberline {3.3.3}{sql.go}}{3}{subsubsection.3.3.3}% 
-\contentsline {paragraph}{{obtenerLatLon}}{4}{paragraph*.24}% 
-\contentsline {paragraph}{{completa}}{4}{paragraph*.25}% 
+\contentsline {paragraph}{{Completa}}{3}{paragraph*.12}% 
+\contentsline {paragraph}{{radianes}}{3}{paragraph*.13}% 
+\contentsline {paragraph}{{obtenerA}}{4}{paragraph*.14}% 
+\contentsline {paragraph}{{distanciaNatural}}{4}{paragraph*.15}% 
+\contentsline {paragraph}{{CopiarCiudades}}{4}{paragraph*.16}% 
+\contentsline {paragraph}{{PrettyPrint}}{4}{paragraph*.17}% 
+\contentsline {subsubsection}{\numberline {3.3.3}{sql.go}}{4}{subsubsection.3.3.3}% 
+\contentsline {paragraph}{{ciudades}}{4}{paragraph*.18}% 
+\contentsline {paragraph}{{TotalAristas}}{4}{paragraph*.19}% 
+\contentsline {paragraph}{{pesoAumentado}}{4}{paragraph*.20}% 
 \contentsline {section}{\numberline {4}{Resultados}}{4}{section.4}% 
+\contentsline {section}{\numberline {5}{Conclusiones}}{5}{section.5}% 

@@ -74,9 +74,18 @@ cree son los óptimos, sin embargo no se pueden demostrar.
 \newpage
 
 
-\section{Introduction}
+\section{Introducción}
 
-A statement requiring citation \cite{Figueredo:2009dg}.
+Dadas $n$ ciudades $(1, ..., n)$ y una distancia no negativa entre dos ciudades
+$i,j$, en donde suponemos que $d_{i,j} = d_{j,i}$. Queremos encontrar el tour menos
+costoso. Una solución al problema es enumerar todas las posibles soluciones, y
+tomar la mejor de estas, el problema con esta propuesta para solucionar el
+problema es que el algoritmo tomaría $O(n)$ en tiempo (Hay $\frac{1}{2}(n - 1)!$
+tours a considerar). Lo cual claramente no es polinomial y por ende, tardaríamos
+mucho en encontrar la mejor solución para instancias grandes (aunque no tan
+grandes) del problema.
+Existen heurísticas que funcionan bien y pueden regresar tours que no están tan
+alejados del óptimo. En este proyecto, veremos la aceptación por umbrales.\\
 
 \section{Lenguaje}
 
@@ -102,7 +111,19 @@ carpeta generada en el \textit{home}.
 Los pros fueron los tipos de regreso, que cuando importabas una biblioteca si no
 la usabas no te dejaba compilar el programa, igual que cuando creabas una
 variable y esta no era usada no te dejaba compilar, y que una vez que más o menos
-le agarras la onda ya no es tan complicado hacer cosas sencillas en el lenguaje.
+le agarras la onda ya no es tan complicado hacer cosas sencillas en el lenguaje.\\
+Pero, también vienen cosas no tan buenas (En lo que respecta a mi), como el uso
+de los operadores \textit{*} y \textit{\&}, que si hacía todo en el mismo archivo
+no me generaban tantos problemas, pero cuando acabé (todo en un archivo, como
+debe de ser) y quise pasarlo a los distintos archivos que tenía planeado, me
+mandaba muchos erroes como \texttt{cannot use cis (type *[]Ciudad) as type
+  []Ciudad in argument to TotalAristas} y pues la verdad fue muy complicado
+arreglar eso, hasta que me harté e hice un pseudomain en \texttt{funciones.go},
+que es casi lo mismo que tenía en el programa de un solo archivo, y ya solo desde
+el main (\texttt{main/main.go}), llamo al pseudomain (\texttt{funciones/funciones
+  .go/NewTSP}) y parece que funciona bien.\\
+La verdad creo que es un buen lenguaje y debería practicarlo más (demasiado), por
+que estuvo complicado.
 
 \section{Packages}
 
@@ -115,13 +136,14 @@ le agarras la onda ya no es tan complicado hacer cosas sencillas en el lenguaje.
 \subsection{Main}
 
 En este ``package'' lo que se implementó es la función main, y se importan los
-``package'' \textit{``fmt'', ``os'', ``math/rand'', ``funciones'', ``argumentos''
+``package'' \textit{``fmt'', ``funciones'', ``argumentos'', ``os'',  ``math/rand''
 }.
 
 \paragraph{Función main} Es la función principal, se encarga de verificar la
-entrada esto quiere decir, que se le pasen los argumentos correspondientes.
-También se crea un ``struct'' Ciudades y Solucion que son llamados de
-``funciones''.
+entrada esto quiere decir, que se le pasen los argumentos correspondientes. En
+la implementación actual tiene un ciclo para probar como semillas los primeros
+1000 números naturales. La idea es quitar el ciclo una vez que encuentre la mejor
+solución, aunque es probale que eso tarde un poco.
 
 \subsection{Argumentos}
 En este ``package'' se encuentra el archivo ``leer\_ciudades.go''.
@@ -133,7 +155,8 @@ datos. La función regresa un \texttt{[]int} con los índices
 de las ciudades, regresa la semilla que es el segundo argumento en tipo
 \texttt{int}, y el nombre del archivo que se leyó, esto con la finalidad de
 escribir un archivo con los datos obtenidos y se tenga conocimiento de a qué
-resultados hacen referencia.
+resultados hacen referencia. Pero por el tiempo y por el ciclo, no uso (por ahora
+) el escribir un archivo.
 
 \subsection{Funciones}
 En este ``package'' se encuentran los archivos ``funciones.go'',
@@ -141,64 +164,113 @@ En este ``package'' se encuentran los archivos ``funciones.go'',
 
 \subsubsection{funciones.go}
 
-\paragraph{Función PrintCiudad}
-\paragraph{Función PrintData}
-\paragraph{Función totalAristas}
-\paragraph{Función GetNormalizador}
-\paragraph{Función FunCosto}
-\paragraph{Función FunCostoSolucion}
-\paragraph{Función porcentajeAceptados}
-\paragraph{Función busquedaBinaria}
-\paragraph{Función TemperaturaInicial}
-\paragraph{Función calculaLote}
-\paragraph{Función AceptacionPorUmbrales}
-\paragraph{Función printSol}
-\paragraph{Función NewSolucion}
-\paragraph{Función NewCiudades}
+\paragraph{GetNormalizador} Función que obtiene el normalizador como lo indica el
+PDF, es la suma de las $k$ aristas más pesadas de nuestra instancia.
 
+\paragraph{funcioncosto} Función que calcula la función de costo, o sea, la suma
+de la arista del vértice $i$ con el $i+1$, esté o no esté en la gráfica, usamos
+la matriz que contiene toda la gráfica para esto.
+
+\paragraph{vecino} Dado un \texttt{[]Ciudad}, que representa el acomodo de los
+índices de las ciudades, regresa un vecino de esta representación, eso es, el
+intercambio de dos índices aleatorios.
+
+\paragraph{porcentajeAceptados} Función que regresa el porcentaje de aceptados.
+
+\paragraph{busqueadBinaria} Función encargada de hacer búsqueda binara para
+encontrar una temperatura buena.
+
+\paragraph{temperaturaInicial} Función que intenta encontrar una buena
+temperatura, inicia con temperatura de 8.
+
+\paragraph{calculaLote} Función que calcula el porcentaje de aceptados en un lote
+, tiene un límite que es el tamaño de un lote al cuadrado. Creo que hago muchos
+copiar ciudades, así que eso se podría arreglar, al igual que crear nuevas
+soluciones.
+
+\paragraph{aceptacionPorUmbrales} Función que modela la aceptación por umbrales.
+Regresa una configuración de las ciudades, y su evaluación. Podría regresar una
+Solucion, en vez de regresar los datos individuales.
+
+\paragraph{newTSP} Como mencioné anteriormente, tuve problemas como \textit{\&,*}
+, y este el pseudomain, se encarga de crear soluciones y los datos generales,
+para después conseguir una temperatura y finalmente hacer la aceptación por
+umbrales. Se puede arreglar, y demasiado, para que solo regrese un *TSP, y hacer
+los correspondientes (\textit{NewGeneral, NewSolucion, NewCiudades})pero por el
+momento creo que sirve.
 
 \subsubsection{operaciones.go}
 En este archivo se implementan todas las funciones que no tienen que ver tanto
 con la heurística o que como su nombre lo indica, son operaciones básicas.
 
-\paragraph{Función radianes} Cambia una coordenada (\texttt{float64}) en su
+\paragraph{Completa} Esta función recibe un arreglo de Ciudades y busca todas las
+aristas en la gráfica completa, hace uso de ``sql.go'', la idea es que después no
+tengamos que estar haciendo consultas, sino que todos los datos de las aristas,
+se encuentren aquí. Tuve problemas pues no llenaba bien la gráfica
+
+\paragraph{radianes} Cambia una coordenada (\texttt{float64}) en su
 representación en radianes (\texttt{float64}).
-\paragraph{Función distanciaNatural} Calcula la distancia en la vida real entre
-dos índices de, ciudades, no es la distancia exacta. Hace uso del archivo
-``sql.go''.
-\paragraph{Función obtenerA} Regresa el resultado de la siguiente fórmula:
+
+\paragraph{obtenerA} Regresa el resultado de la siguiente fórmula:
 \begin{equation}
   A = \sin(\frac{lat(v)- lat(u)}{2})^{2} + \cos(lat(u)) \times \cos(lat(v)) \times
   \sin(\frac{lon(v) - lon(u)}{2})^{2}
 \label{eq:refname2}
 \end{equation}
 
-\paragraph{Función pesoAumentado} Dados dos índices de ciudades y la máxima distancia,
-regresa la distancia entre las dos ciduades multiplicada por la máxima distancia.
-\paragraph{Función CopiarCiudades} Copia un \texttt{[]int} y regresa la copia.
-\paragraph{Función swap} Dados dos índices, y un \texttt{[]int}, cambia los índices en
-una copia del \texttt{[]int}.
-\paragraph{Función vecino} Dado un \texttt{[]int}, que representa el acomodo de los
-índices de las ciudades, regresa un vecino de esta representación, eso es, el
-intercambio de dos índices aleatorios.
+\paragraph{distanciaNatural} Calcula la distancia en la vida real entre
+dos índices de, ciudades, no es la distancia exacta. Hace uso de la constante
+\textit{radio}, definida en este archivo.
 
+\paragraph{CopiarCiudades} Copia un \texttt{[]int} y regresa la copia.
+
+\paragraph{PrettyPrint} Imprime un arreglo de ciudades de manera bonita (Solo los
+índices), para estructurar el programa, debería recibir una solución y usar su
+arreglo de ciudades. igual se podría usar una bandera para definir qué se quiere
+imprimir del arreglo (\textit{nombre, país, población, etc}).
 
 \subsubsection{sql.go}
 En este archivo se hace la conexión con la base de datos, así como los queries
-necesarios durante la implementación de la heurística.
+necesarios durante la implementación de la heurística. Existen unas constantes
+que son el query, pero es para no escribir tanto después.
 
-\paragraph{obtenerLatLon} Es la función encargada de regresar una tupla de
-\texttt{float64} la tupla representa a la latitud y longitud de las ciudades en
-el mundo.
+\paragraph{ciudades} En esta función recibimos un arreglo de enteros, que contine
+a los índices de las ciudades para la instancia, y regresa un arreglo de tipo
+\textit{Ciudad} que contiene todos los datos de la tabla cities para un índice,
+aunque no usamos algunos, creo que podemos regresar de manera más agradable las
+ciudade usadas.
 
-\paragraph{completa} Esta función recibe un \texttt{[]int} el cual contiene a los
-índices de las ciudades y regresa un \texttt{[][]float64} el cual representa a
-todas las conexiones que se quieren para una instancia de nuestro problema.
+\paragraph{TotalAristas} Esta función se encarga de regresar las aristas que
+existen en nuestra instancia, aparte las regresa ya ordenadas.
+
+\paragraph{pesoAumentado} La función regresa la distancia (si es que existe en la
+base de datos), sino existe, regresa la distancia aumentada. Tuve algunos
+conflictos con esta, pues no había tomado en cuenta que en la base solo están las
+distancias de las aristas $i,j syss i < j$, entonces la función actualiza al
+mayor.
 
 \section{Resultados}
+La siguiente gráfica muestra el cómo van mejorando las soluciones aceptadas en la
+instancia de 40 ciudades.\\
+
+\includegraphics[scale=.2]{../imagenes/gatito.jpg}
+\includegraphics[scale=.2]{../imagenes/pm.jpg}\\
+En cuanto tenga mis mejores soluciones, añadiré la gráfica.
 
 
-\bibliography{mybib}{}
+\section{Conclusiones}
+Aún no llego a la mejor solución con 40 ciudades y no he probado mas que un par
+de veces la de 150. Pero parece que si va la va a encontrar, sigue corriendo, la
+mejor semilla hasta ahora es 99 (Para 40) y espero que para mañana acabe de
+hacerlo con 1000 semillas.\\
+No sé si go fue la mejor opción, desde primer semestre no me sentía tan malo en
+algo, pero estuvo divertido, más o menos, e interesante. Aún hay cosas que puedo
+hacer o mejorar y espero hacerlas.
+
+\bibliography{mybib}{
+  \nocite{canek}
+  \nocite{papadimitriou}
+}
 \bibliographystyle{plain}
 
 \end{document}
