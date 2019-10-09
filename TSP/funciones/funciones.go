@@ -149,15 +149,17 @@ func calculaLote(tsp *TSP) (float64, *TSP) {
 	s := copiarCiudades(tsp.actt.ciudades)
 	fs := tsp.actt.eval
 	mejor := copiarCiudades(tsp.best.ciudades)
+	n := len(tsp.init.ciudades)
 	fMejor:= tsp.best.eval
-	for c < L && i < L*L {
+	for c < L && i < L*2*n {
 		sP := vecino(s)
 		fsP := FuncionCosto(sP, &tsp.datos)
 		if fsP < fs + tsp.temperatura {
+			i = 0
 			s = copiarCiudades(sP)
 			fs = fsP
 			c++
-			r = r + fs
+			r += fs
 			if fs < fMejor {
 				mejor = copiarCiudades(s)
 				fMejor = fs
@@ -182,6 +184,9 @@ func AceptacionPorUmbrales(tsp *TSP) ([]Ciudad, float64){
 			rl, newTSP := calculaLote(tsp)
 			p = rl
 			mejor = copiarCiudades(newTSP.best.ciudades)
+			tsp.best.ciudades = mejor
+			tsp.best.eval = newTSP.best.eval
+			fmt.Printf("E:%2.15f\n", tsp.best.eval)
 		}
 		tsp.temperatura = tsp.temperatura * PHI
 	}
@@ -189,7 +194,25 @@ func AceptacionPorUmbrales(tsp *TSP) ([]Ciudad, float64){
 	return mejor, fMejor
 }
 
-func NewTSP(ids []int) {
+func checkVecindario(cis []Ciudad, costo float64, g *General) ([]Ciudad, float64) {
+	for i := 0; i < len(cis); i++ {
+		for j := 0; j < len(cis); j++ {
+			aux := cis[i]
+			cis[i] = cis[j]
+			cis[j] = aux
+			newCosto := FuncionCosto(cis, g)
+			if newCosto < costo {
+				fmt.Printf("i--%d\nj--%d\n",i,j)
+				costo = newCosto
+				i = 0
+				j = 0
+			}
+		}
+	}
+	return cis, costo
+}
+
+func NewTSP(ids []int) float64 {
 	ciudades := ciudades(ids) // arreglo de todas las ciudades
 	aristasE := TotalAristas(ciudades) // las aristas de la gráfica
 	max := aristasE[len(aristasE)-1] // máxima distancia
@@ -207,6 +230,8 @@ func NewTSP(ids []int) {
 	tsp := TSP{ini, act, mej, ti, gen}
 	fmt.Printf("TEMP INICIAL:\t%2.15f\n", tsp.temperatura)
 	mejorCiu, mejorCos := AceptacionPorUmbrales(&tsp) // mejor sol y su eval
-	fmt.Printf("EVAL MEJOR:\t%2.15f\n", mejorCos)
 	PrettyPrint(mejorCiu)
+	mejorCiu, mejorCos = checkVecindario(mejorCiu, mejorCos, &gen)
+	fmt.Printf("EVAL MEJOR:\t%2.15f\n", mejorCos)
+	return mejorCos
 }

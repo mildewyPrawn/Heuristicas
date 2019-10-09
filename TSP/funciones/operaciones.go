@@ -10,11 +10,11 @@ const (
 	// Constante del radio de la tierra aproximado
 	radio = 6373000
 	// medidas que son las que debería ir ajustando
-	P = 0.90
+	P = 0.95
 	EPSILON = 0.0001
-	EPSILONP = 0.0001
+	EPSILONP = 0.001
 	L = 1000
-	PHI = .9
+	PHI = .90
 )
 
 // Funcion que saca la gráfica completa de las ciudades
