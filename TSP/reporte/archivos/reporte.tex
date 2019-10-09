@@ -251,18 +251,27 @@ mayor.
 
 \section{Resultados}
 La siguiente gráfica muestra el cómo van mejorando las soluciones aceptadas en la
-instancia de 40 ciudades.\\
+instancia de 40 ciudades. No es la mejor solución, pero es la mejor que he encontrado
+con aproximadamente 1300 semillas.\\
 
-\includegraphics[scale=.2]{../imagenes/gatito.jpg}
-\includegraphics[scale=.2]{../imagenes/pm.jpg}\\
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[scale=.5]{../imagenes/seed326.png}
+    \caption{seed: 326}
+\end{figure}
 En cuanto tenga mis mejores soluciones, añadiré la gráfica.
 
 
 \section{Conclusiones}
 Aún no llego a la mejor solución con 40 ciudades y no he probado mas que un par
-de veces la de 150. Pero parece que si va la va a encontrar, sigue corriendo, la
-mejor semilla hasta ahora es 99 (Para 40) y espero que para mañana acabe de
-hacerlo con 1000 semillas.\\
+de veces la de 150. Tengo algunas configuraciones y con ellas algunas buenas
+soluciones, por ejemplo con \textit{P=.95, EPSILON=0.0001, EPSILONP=0.001,
+  L=1000, PHI=.90}, la mejor ejecución es la semilla \textit{326} y devuelve una
+evaluación  de \textit{0.264213004460434}. Pero no es la mejor (la posible
+mejor), así que aún me falta hacer un poco de corridas o modificar mis parámetros
+. Corrí aproximadamente 1300 semillas y solo tres pasaron el 0.27, entonces, creo
+que faltan muchas más pruebas, quizá modificar los datos y seguir probando. Lo
+bueno es que tarda como 35 segundos en dar esa solución.
 No sé si go fue la mejor opción, desde primer semestre no me sentía tan malo en
 algo, pero estuvo divertido, más o menos, e interesante. Aún hay cosas que puedo
 hacer o mejorar y espero hacerlas.
