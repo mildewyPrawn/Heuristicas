@@ -9,7 +9,7 @@ import (
 )
 
 // func Leer_grafica(path string) []int {
-func Leer_grafica(path string) int {
+func Leer_grafica(path string) (map[int]int, map[int]int) {
 	m := make(map[int]int)
 	archivo, err := os.Open(path)
 	if err != nil {
@@ -33,16 +33,26 @@ func Leer_grafica(path string) int {
 		deudas := strings.Split(verts[1],",") // acredores
 		for j := 0; j < len(deudas); j++ {
 			acredores := strings.Split(deudas[j], ":")
-			// otherKey, _ := strconv.Atoi(acredores[0]) // acredor i
+			otherKey, _ := strconv.Atoi(acredores[0]) // acredor i
 			debt, _ := strconv.Atoi(acredores[1]) // deuda de key a otherKey
 			val := m[key]
-			m[key] = val - debt
-			
-			// fmt.Printf("[%d]\t[%s]--[%s]\n", key, acredores[0], acredores[1])
+			m[key] = val+debt // deuda
+			if value, ok := m[otherKey]; ok { // si el acredor existe
+				m[otherKey] = value-debt // acumula dinero
+			} else {
+				m[otherKey] = -debt // se crea con el dinero que le deben
+			}
 		}
-		// fmt.Println(deudas)
-		fmt.Println(m)
 	}
-	// fmt.Println(m)
-	return 8
+	a := make(map[int]int)
+	d := make(map[int]int)
+	for k := range m {
+		if m[k] < 0 {
+			a[k] = m[k] // todos los que deben
+		} else if m[k] > 0 {
+			d[k] = m[k] // a los que le deben
+		}
+	}
+	// acredores, deudores
+	return a, d
 }
