@@ -7,6 +7,9 @@ import (
 )
 
 func main() {
-	matriz := arg.Leer_grafica(os.Args[1])
-	fmt.Println(matriz)
+	a, d := arg.Leer_grafica(os.Args[1])
+	fmt.Print("ACREDORES: ")
+	fmt.Println(a)
+	fmt.Print("DEUDORES: ")
+	fmt.Println(d)
 }
