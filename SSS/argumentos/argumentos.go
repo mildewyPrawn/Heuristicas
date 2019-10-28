@@ -20,10 +20,15 @@ func Leer_grafica(path string) (map[int]int, map[int]int) {
 	for scanner.Scan() {
 		linea += scanner.Text() + "\n"
 	}
-	linea = strings.TrimSpace(linea) // quitar \n
+	linea = strings.TrimSpace(linea) // quitar \n final
 	clases := strings.Split(linea, "\n") // separar lineas
 	for i := 0; i < len(clases); i++ {
-		verts := strings.Split(clases[i], "       "); // separar \t
+		clases[i] = strings.TrimSpace(clases[i])
+		// verts := strings.Split(clases[i], "       "); // separar \t
+		verts := strings.Split(clases[i], "\t"); // separar \t
+		if len(verts) == 1 {
+			continue
+		}
 		key, _ := strconv.Atoi(verts[0])// deudor
 		if _, ok := m[key]; ok {
 			m[key] += 0
