@@ -24,8 +24,8 @@ func Leer_grafica(path string) (map[int]int, map[int]int) {
 	clases := strings.Split(linea, "\n") // separar lineas
 	for i := 0; i < len(clases); i++ {
 		clases[i] = strings.TrimSpace(clases[i])
-		// verts := strings.Split(clases[i], "       "); // separar \t
-		verts := strings.Split(clases[i], "\t"); // separar \t
+		verts := strings.Split(clases[i], "       "); // separar \t
+		// verts := strings.Split(clases[i], "\t"); // separar \t
 		if len(verts) == 1 {
 			continue
 		}
