@@ -1,9 +1,11 @@
 package main
 
 import (
-	arg "github.com/Heuristicas/SSS/argumentos"
-	"os"
 	"fmt"
+	"math/rand"
+	"os"
+	arg "github.com/Heuristicas/SSS/argumentos"
+	mvo "github.com/Heuristicas/SSS/funciones"
 )
 
 func main() {
@@ -12,4 +14,11 @@ func main() {
 	fmt.Println(a)
 	fmt.Print("DEUDORES: ")
 	fmt.Println(d)
+
+	seed := 64
+	rand.Seed(int64(seed)) // setear la seed a todo el programa
+	// mvo.CreaAristas(a,d)
+	u := mvo.PrimerUniverso(a,d)
+	mvo.CreaAristas(u)
+	
 }
