@@ -15,8 +15,8 @@ type transactores struct {
 
 // Quien le debe a quien
 type Pair struct {
-	deudor int
-	acreedor int
+	d int
+	a int
 }
 
 type universo struct {
@@ -24,6 +24,7 @@ type universo struct {
 	acreedores []transactores
 	deudores []transactores
 	aristas []Pair
+	total int
 	error int
 }
 
@@ -38,21 +39,42 @@ type multiverso struct {
 func PrimerUniverso(a, d map[int]int) universo {
 	var acre []transactores
 	var deud []transactores
+	tot := 0
 	for k, v := range a {
 		ti := transactores{k, true, v, -1, nil}
 		acre = append(acre, ti)
+		tot += v
 	}
 	for k, v := range d {
 		ti := transactores{k, false, v, -1, nil}
 		deud = append(deud, ti)
 	}
-	u := universo{0, acre, deud, nil, 0}
-	fmt.Println(u)
+	u := universo{0, acre, deud, nil, tot, 0}
+	// fmt.Println(u)
 	return u
 }
 
-func calculaError() {
-	
+
+// problemas porque usa una copia, que pedo
+func calculaError(u universo) int {
+	error := 0
+	for _,a := range u.acreedores {
+		for _,d := range a.deQuienes {
+			fmt.Println(d)
+			for _, td := range u.deudores {
+				if td.id == d {
+					fmt.Printf(">>>%d\n",a.monto)
+					a.monto += td.monto
+				}
+				error += abs(a.monto)
+				fmt.Printf("EEEEE%d\n", error)
+			}
+		}
+		fmt.Println(a.deQuienes)
+	}
+	fmt.Println(u)
+	fmt.Printf(">>>E%d\n",error)
+	return error
 }
 
 // Función que crea aristas entre los deudores y acreedores
@@ -71,7 +93,8 @@ func CreaAristas(u universo) universo {
 		aris = append(aris, p)
 	}
 	// TODO calcular el error
-	v := universo {1, u.acreedores, u.deudores, aris, -1}
+	v := universo {1, u.acreedores, u.deudores, aris, u.total, -1}
 	fmt.Println(v)
+	calculaError(v)
 	return v
 }
