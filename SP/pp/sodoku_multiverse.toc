@@ -1,0 +1,3 @@
+\babel@toc {spanish}{}
+\beamer@sectionintoc {1}{Problemapn}{2}{0}{1}
+\beamer@sectionintoc {2}{Heur\IeC {\'\i }stica}{5}{0}{2}
